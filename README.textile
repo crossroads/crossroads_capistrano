@@ -13,4 +13,4 @@ bc. gem 'crossroads_capistrano', :git => 'http://github.com/crossroads/crossroad
 Add the following to your project's *config/deploy.rb* :
 
 bc. require 'crossroads_capistrano'
-    Crossroads::Capistrano.load_recipes %w(prompt stack rvm passenger postgresql newrelic log)
+Crossroads::Capistrano.load_recipes %w(prompt stack rvm passenger postgresql newrelic log)
