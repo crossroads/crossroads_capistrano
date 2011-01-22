@@ -14,3 +14,5 @@ Add the following to your project's *config/deploy.rb* :
 
 bc. require 'crossroads_capistrano'
 CrossroadsCapistrano.load_recipes %w(prompt stack rvm passenger postgresql newrelic log)
+# or ..
+CrossroadsCapistrano.load_recipes :all
