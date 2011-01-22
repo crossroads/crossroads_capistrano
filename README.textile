@@ -1,0 +1,10 @@
+h1. Crossroads Capistrano
+
+A "Crossroads":http://www.crossroads.org.hk specific set of generic capistrano recipes.
+
+This gem can be included in all our rails apps that use Capistrano.
+
+Example (in deploy.rb) :
+
+  require 'crossroads_capistrano'
+  Crossroads::Capistrano.load_recipes %w(prompt stack rvm passenger postgresql newrelic log)
