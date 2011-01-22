@@ -6,11 +6,11 @@ This gem can be included in all our rails apps that use Capistrano.
 
 h3. Usage
 
-Add the following to your project's +Gemfile+ :
+Add the following to your project's *Gemfile* :
 
-  gem 'crossroads_capistrano', :git => 'http://github.com/crossroads/crossroads_capistrano.git'
+bc. gem 'crossroads_capistrano', :git => 'http://github.com/crossroads/crossroads_capistrano.git'
  
-Add the following to your project's +config/deploy.rb+ :
+Add the following to your project's *config/deploy.rb* :
 
-  require 'crossroads_capistrano'
-  Crossroads::Capistrano.load_recipes %w(prompt stack rvm passenger postgresql newrelic log)
+bc. require 'crossroads_capistrano'
+    Crossroads::Capistrano.load_recipes %w(prompt stack rvm passenger postgresql newrelic log)
