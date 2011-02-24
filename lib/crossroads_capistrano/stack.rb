@@ -19,6 +19,7 @@ namespace :stack do
   task :default do
     yum.update
     yum.install( {:base => packages_for_project}, :stable ) if packages_for_project
+    
     gems
 
     deploy.setup
