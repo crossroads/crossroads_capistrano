@@ -18,3 +18,5 @@ task :revisions, :roles => :app do
   end
 end
 
+before "deploy", "revisions"
+
