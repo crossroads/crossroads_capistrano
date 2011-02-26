@@ -3,7 +3,7 @@ $:.push File.expand_path("../lib", __FILE__)
 
 Gem::Specification.new do |s|
   s.name        = "crossroads_capistrano"
-  s.version     = "1.1.0"
+  s.version     = "1.2.0"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Steve Kenworthy", "Ben Tillman", "Nathan Broadbent"]
   s.email       = ["it_dept@crossroads.org.hk"]
@@ -18,3 +18,4 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 end
+
