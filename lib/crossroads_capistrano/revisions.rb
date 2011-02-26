@@ -8,8 +8,11 @@ task :revisions, :roles => :app do
   puts "=== Previous Revision: \033[1;32m#{previous}\033[0m\n\n"
   # Show difference between master and deployed revisions.
   if (diff = `git log #{current}..#{latest} --oneline`) != ""
-    diff.gsub!(/^([a-f0-9]+) /, "\033[1;32m" << '\1' << "\033[0m - ")
+    # Colorize refs
+    diff.gsub!(/^([a-f0-9]+) /, "\033[1;32m\\1\033[0m - ")
     diff = "    " << diff.gsub("\n", "\n    ") << "\n"
+    # Indent commit messages nicely, max 80 chars per line, line has to end with space.
+    diff = diff.split("\n").map{|l|l.scan(/.{1,120}/).join("\n"<<" "*14).gsub(/([^ ]*)\n {14}/m,"\n"<<" "*14<<"\\1")}.join("\n")
     puts "=== Difference between master revision and deployed revision:\n\n"
     puts diff
   end
