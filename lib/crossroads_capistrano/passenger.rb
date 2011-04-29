@@ -37,10 +37,20 @@ namespace :passenger do
     yum.install( {:base => %w(curl-devel httpd-devel apr-devel)}, :stable )
   end
 
-  desc "Apache config files"
+  desc "Apache config files: uses special variables @DEPLOY_TO@ @IP_ADDR@ @SERVER_NAME@ @PASSENGER_ROOT@ @RUBY_ROOT@"
   task :config, :roles => :web do
     run "sed -e 's,@DEPLOY_TO@,#{deploy_to},g' -e 's,@IP_ADDR@,#{ip_address},g' -e 's,@SERVER_NAME@,#{site_domain_name},g' #{release_path}/config/httpd-rails.conf > /etc/httpd/sites-enabled/010-#{application}-#{stage}.conf"
-    run "sed -e 's,@RVM_RUBY_STRING@,#{rvm_ruby_string},g' -e 's,@PASSENGER_VERSION@,#{passenger_version},g' #{release_path}/config/passenger.conf > /etc/httpd/mods-enabled/passenger.conf"
+    passenger_root = ""
+    run "pass_path=`gem which phusion_passenger` && echo ${pass_path%/lib/phusion_passenger.rb}" do |channel, stream, data|
+      passenger_root = data
+    end
+    ruby_root = ""
+    run "which ruby" do |channel, stream, data|
+      ruby_root = data
+    end
+    sed_args = "-e 's,@PASSENGER_ROOT@,#{passenger_root.strip},g'"
+    sed_args << " -e 's,@RUBY_ROOT@,#{ruby_root.strip},g'"
+    run "sed #{sed_args} #{release_path}/config/passenger.conf > /etc/httpd/mods-enabled/passenger.conf"
   end
 
 end
