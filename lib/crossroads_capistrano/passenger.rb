@@ -29,8 +29,8 @@ namespace :passenger do
   task :install, :roles => :web do
     install_deps
 
-    run "gem install passenger --no-rdoc --no-ri --version #{passenger_version}"
-    run "passenger-install-apache2-module --auto"
+    run "if ! (gem list | grep passenger | grep #{passenger_version}); then gem install passenger --no-rdoc --no-ri --version #{passenger_version} && passenger-install-apache2-module --auto; fi"
+
   end
 
   task :install_deps, :roles => :web do
