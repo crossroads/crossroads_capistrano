@@ -8,7 +8,7 @@ namespace :rvm do
   end
 
   task :install_deps, :roles => :web do
-    yum.install( {:base => %w(curl git gcc-c++ patch readline readline-devel zlib zlib-devel libyaml-devel libffi-devel)}, :stable, :shell => 'sh' )
+    yum.install( {:base => %w(curl git gcc-c++ patch readline readline-devel zlib zlib-devel libyaml-devel libffi-devel openssl-devel make bzip2)}, :stable, :shell => 'sh' )
   end
 
 end
