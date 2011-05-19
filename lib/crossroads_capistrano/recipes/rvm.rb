@@ -3,7 +3,7 @@ namespace :rvm do
   desc "Install rvm"
   task :install, :roles => :web do
     install_deps
-    run "if ! (which rvm); then curl -s https://rvm.beginrescueend.com/install/rvm | bash; fi", :shell => 'sh'
+    run "if ! (which rvm); then bash < <( curl http://rvm.beginrescueend.com/releases/rvm-install-head ); fi", :shell => 'sh'
     run "if ! (rvm list | grep #{rvm_ruby_string}); then rvm install #{rvm_ruby_string}; fi", :shell => 'sh'
   end
 
@@ -14,3 +14,4 @@ namespace :rvm do
 end
 
 before "deploy:cold", "rvm:install"
+
