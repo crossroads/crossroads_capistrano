@@ -1,12 +1,9 @@
-if defined? Capistrano
-  # Crossroads shared capistrano recipes
+# Crossroads shared capistrano recipes
+
+if defined?(Capistrano::Configuration) && Capistrano::Configuration.instance
   require 'capistrano/ext/multistage'
   require 'bundler/capistrano' unless $no_bundler rescue LoadError
   require 'capistrano_colors' rescue LoadError puts "Capistrano Colors is not installed."
-
-  unless Capistrano::Configuration.respond_to?(:instance)
-    abort "rvm/capistrano requires Capistrano >= 2."
-  end
 
   Capistrano::Configuration.instance(:must_exist).load do
     set :rails_root, Dir.pwd   # For tasks that need the root directory
