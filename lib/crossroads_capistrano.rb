@@ -2,6 +2,7 @@ if defined? Capistrano
   # Crossroads shared capistrano recipes
   require 'capistrano/ext/multistage'
   require 'bundler/capistrano' rescue LoadError
+  require 'capistrano_colors' rescue LoadError puts "Capistrano Colors is not installed."
 
   unless Capistrano::Configuration.respond_to?(:instance)
     abort "rvm/capistrano requires Capistrano >= 2."

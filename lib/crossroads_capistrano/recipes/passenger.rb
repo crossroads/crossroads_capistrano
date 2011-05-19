@@ -36,14 +36,16 @@ namespace :passenger do
   desc "Apache config files: uses special variables @DEPLOY_TO@ @IP_ADDR@ @SERVER_NAME@ @PASSENGER_ROOT@ @RUBY_ROOT@"
   task :config, :roles => :web do
     sudo "bash -c \"sed -e 's,@DEPLOY_TO@,#{deploy_to},g' -e 's,@IP_ADDR@,#{ip_address},g' -e 's,@SERVER_NAME@,#{site_domain_name},g' #{release_path}/config/httpd-rails.conf > /etc/httpd/sites-enabled/010-#{application}-#{stage}.conf\""
-    passenger_root = capture("pass_path=`gem which phusion_passenger` && echo ${pass_path%/lib/phusion_passenger.rb}")
-    if respond_to?(:rvm_ruby_string)
+
+    if respond_to?(:rvm_ruby_string)  # Deploying with RVM
       ruby_root = "/usr/local/rvm/wrappers/#{rvm_ruby_string}/ruby"
-      sed_args = "-e 's,@PASSENGER_VERSION@,#{passenger_version},g' -e 's,@RVM_RUBY_STRING@,#{rvm_ruby_string},g'"
-    else
+      passenger_root = "/usr/local/rvm/gems/#{rvm_ruby_string}/gems/passenger-#{passenger_version}"
+    else  # System Ruby
       ruby_root = capture("which ruby")
-      sed_args = "-e 's,@PASSENGER_ROOT@,#{passenger_root.strip},g' -e 's,@RUBY_ROOT@,#{ruby_root.strip},g'"
+      passenger_root = capture("pass_path=`gem which phusion_passenger` && echo ${pass_path%/lib/phusion_passenger.rb}")
     end
+    sed args = "-e 's%@PASSENGER_ROOT@%#{passenger_root.strip}%g' -e 's%@RUBY_ROOT@%#{ruby_root.strip}%g'"
+
     sudo "bash -c \"sed #{sed_args} #{release_path}/config/passenger.conf > /etc/httpd/mods-enabled/passenger.conf\""
   end
 end
