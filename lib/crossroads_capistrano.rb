@@ -1,23 +1,16 @@
-module CrossroadsCapistrano
-  begin
-    @@cap_config = Capistrano::Configuration.instance(:must_exist)
-    class << self
-      def load_recipes(recipes)
-        @@cap_config.load do
-          if recipes == :all
-            # Load all available recipes.
-            recipes = Dir.glob(File.join(File.dirname(__FILE__), 'crossroads_capistrano', '*.rb'))
-            recipes.each{|f| load f}
-          else
-            # Load each specified recipe.
-            recipes.each{|r| load File.join(File.dirname(__FILE__),'crossroads_capistrano',"#{r}.rb")}
-          end
-        end
-      end
-    end
-  rescue LoadError => ex
-    # Ignore this gem if Capistrano is not loaded.
-    raise ex unless ex.message == "Please require this file from within a Capistrano recipe"
+# crossroads_recipes for using RVM on a server with capistrano.
+unless Capistrano::Configuration.respond_to?(:instance)
+  abort "rvm/capistrano requires Capistrano >= 2."
+end
+
+Capistrano::Configuration.instance(:must_exist).load do
+  if @crossroads_recipes == :all
+    # Load all available crossroads_recipes.
+    @crossroads_recipes = Dir.glob(File.join(File.dirname(__FILE__), 'recipes', '*.rb'))
+    @crossroads_recipes.each{|f| load f}
+  else
+    # Load each specified recipe.
+    @crossroads_recipes.each{|recipe| load "crossroads_capistrano/recipes/" << recipe}
   end
 end
 
