@@ -1,3 +1,5 @@
+require 'rvm/capistrano'
+
 namespace :rvm do
 
   desc "Install rvm"

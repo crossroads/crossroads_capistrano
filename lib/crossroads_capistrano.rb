@@ -1,4 +1,7 @@
-# crossroads_recipes for using RVM on a server with capistrano.
+# Crossroads shared capistrano recipes
+require 'capistrano/ext/multistage'
+require 'bundler/capistrano' rescue LoadError
+
 unless Capistrano::Configuration.respond_to?(:instance)
   abort "rvm/capistrano requires Capistrano >= 2."
 end
