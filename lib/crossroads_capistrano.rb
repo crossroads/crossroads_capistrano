@@ -4,13 +4,17 @@ unless Capistrano::Configuration.respond_to?(:instance)
 end
 
 Capistrano::Configuration.instance(:must_exist).load do
-  if @crossroads_recipes == :all
-    # Load all available crossroads_recipes.
-    @crossroads_recipes = Dir.glob(File.join(File.dirname(__FILE__), 'recipes', '*.rb'))
-    @crossroads_recipes.each{|f| load f}
-  else
-    # Load each specified recipe.
-    @crossroads_recipes.each{|recipe| require "crossroads_capistrano/recipes/" << recipe}
+  def load_crossroads_recipes(recipes)
+    if recipes == :all
+      # Load all available crossroads_recipes.
+      recipes = Dir.glob(File.join(File.dirname(__FILE__),
+                                   'crossroads_capistrano', 'recipes', '*.rb'))
+      recipes.each{|f| load f}
+    else
+      # Load each specified recipe.
+      recipes.each{|r| load File.join(File.dirname(__FILE__),
+                                      "crossroads_capistrano/recipes/#{r}.rb")}
+    end
   end
 end
 
