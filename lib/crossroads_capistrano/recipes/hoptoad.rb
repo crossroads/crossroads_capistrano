@@ -4,8 +4,9 @@
 namespace :deploy do
   desc "Notify Hoptoad of the deployment"
   task :notify_hoptoad, :except => { :no_release => true } do
+    require 'active_support/core_ext/string'
     require 'hoptoad_notifier'
-    require 'config/initializers/hoptoad'
+    require File.join(rails_root,'config','initializers','hoptoad')
     require 'hoptoad_tasks'
 
     rails_env = fetch(:hoptoad_env, fetch(:rails_env, "production"))

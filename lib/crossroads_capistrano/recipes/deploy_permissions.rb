@@ -1,4 +1,13 @@
-# For apps the need special user permissions.
+# For apps that are deployed with user permissions.
+# ----------------------------------------------------------
+
+# Our developers use different users on their local machines.
+set :user, case sysuser = `echo $USER`.strip
+when 'warp'  then 'bstillman'
+when 'steve' then 'swkenworthy'
+else sysuser
+end
+
 namespace :deploy do
   desc "Deploy permissions (give user access to everything)"
   task :user_permissions do

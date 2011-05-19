@@ -25,7 +25,7 @@ namespace :postgresql do
 end
 
 namespace :db do
-  desc "Download raw database"
+  desc "Download production database to local machine"
   task :pull do
     prompt_with_default("Database", :dbname, "#{application}_#{default_stage}")
     prompt_with_default("Database user", :username, "postgres")
