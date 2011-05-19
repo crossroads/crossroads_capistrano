@@ -3,6 +3,7 @@ namespace :deploy do
   desc "Deploy permissions (give user access to everything)"
   task :user_permissions do
     sudo "chown -R #{user} #{deploy_to}"
+    $apache_permissions = false
   end
   desc "Apache permissions (for passenger)"
   task :apache_permissions do
