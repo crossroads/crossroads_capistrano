@@ -44,7 +44,7 @@ namespace :passenger do
       ruby_root = capture("which ruby")
       passenger_root = capture("pass_path=`gem which phusion_passenger` && echo ${pass_path%/lib/phusion_passenger.rb}")
     end
-    sed args = "-e 's%@PASSENGER_ROOT@%#{passenger_root.strip}%g' -e 's%@RUBY_ROOT@%#{ruby_root.strip}%g'"
+    sed_args = "-e 's%@PASSENGER_ROOT@%#{passenger_root.strip}%g' -e 's%@RUBY_ROOT@%#{ruby_root.strip}%g'"
 
     sudo "bash -c \"sed #{sed_args} #{release_path}/config/passenger.conf > /etc/httpd/mods-enabled/passenger.conf\""
   end
