@@ -10,7 +10,7 @@ Capistrano::Configuration.instance(:must_exist).load do
     @crossroads_recipes.each{|f| load f}
   else
     # Load each specified recipe.
-    @crossroads_recipes.each{|recipe| load "crossroads_capistrano/recipes/" << recipe}
+    @crossroads_recipes.each{|recipe| require "crossroads_capistrano/recipes/" << recipe}
   end
 end
 
