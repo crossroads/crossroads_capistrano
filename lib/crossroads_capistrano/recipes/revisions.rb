@@ -19,9 +19,9 @@ namespace :deploy do
     if (diff = `git log #{base_rev}..#{new_rev} --oneline`) != ""
       # Colorize refs
       diff.gsub!(/^([a-f0-9]+) /, "\033[1;37m\\1\033[0m: ")
-      diff = " "*18 << diff.gsub("\n", "\n    ") << "\n"
+      diff = "        " << diff.gsub("\n", "\n        ") << "\n"
       # Indent commit messages nicely, max 80 chars per line, line has to end with space.
-      diff = diff.split("\n").map{|l|l.scan(/.{1,120}/).join("\n"<<" "*28).gsub(/([^ ]*)\n {28}/m,"\n"<<" "*28<<"\\1")}.join("\n")
+      diff = diff.split("\n").map{|l|l.scan(/.{1,120}/).join("\n"<<" "*18).gsub(/([^ ]*)\n {18}/m,"\n"<<" "*18<<"\\1")}.join("\n")
       puts "  * \033[0;32m== Difference between \033[1;32m#{base_label}\033[0;32m and \033[1;32m#{new_label}\033[0;32m:\033[0m\n\n"
       puts diff
     end
