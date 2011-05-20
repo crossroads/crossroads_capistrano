@@ -36,8 +36,14 @@ namespace :passenger do
 
   desc "Apache config files: uses special variables @DEPLOY_TO@ @IP_ADDR@ @SERVER_NAME@ @PASSENGER_ROOT@ @RUBY_ROOT@"
   task :config, :roles => :web do
-    sudo "cp -f #{release_path}/config/httpd-rails.conf /etc/httpd/sites-enabled/010-#{application}-#{stage}.conf"
-    sudo "sed -i -e 's%@DEPLOY_TO@%#{deploy_to}%g' -e 's%@IP_ADDR@%#{ip_address}%g' -e 's%@SERVER_NAME@%#{site_domain_name}%g' /etc/httpd/sites-enabled/010-#{application}-#{stage}.conf"
+    # You can set the following paths from your deploy.rb file, if needed.
+    unless defined?(httpd_site_conf_path)
+      httpd_site_conf_path = "/etc/httpd/sites-enabled/010-#{application}-#{stage}.conf"
+    end
+    unless defined?(passenger_conf_path)
+      passenger_conf_path = "/etc/httpd/mods-enabled/passenger.conf"
+    end
+
     if respond_to?(:rvm_ruby_string)  # Deploying with RVM
       ruby_root = "/usr/local/rvm/wrappers/#{rvm_ruby_string}/ruby"
       passenger_root = "/usr/local/rvm/gems/#{rvm_ruby_string}/gems/passenger-#{passenger_version}"
@@ -46,8 +52,12 @@ namespace :passenger do
       passenger_root = capture("pass_path=`gem which phusion_passenger` && echo ${pass_path%/lib/phusion_passenger.rb}")
     end
     sed_args = "-e 's%@PASSENGER_ROOT@%#{passenger_root.strip}%g' -e 's%@RUBY_ROOT@%#{ruby_root.strip}%g'"
-    sudo "cp -f #{release_path}/config/passenger.conf /etc/httpd/mods-enabled/passenger.conf"
-    sudo "sed -i #{sed_args} /etc/httpd/mods-enabled/passenger.conf"
+    # httpd conf
+    sudo "cp -f #{release_path}/config/httpd-rails.conf #{httpd_site_conf_path}"
+    sudo "sed -i -e 's%@DEPLOY_TO@%#{deploy_to}%g' -e 's%@IP_ADDR@%#{ip_address}%g' -e 's%@SERVER_NAME@%#{site_domain_name}%g' #{httpd_site_conf_path}"
+    # passenger conf
+    sudo "cp -f #{release_path}/config/passenger.conf #{passenger_conf_path}"
+    sudo "sed -i #{sed_args} #{passenger_conf_path}"
   end
 end
 

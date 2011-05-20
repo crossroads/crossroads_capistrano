@@ -30,5 +30,15 @@ namespace :log do
       puts "File can be accessed at /tmp/production.log"
     end
   end
+
+  desc "Symlink shared logs to /var/log/rails/<application>-<stage>"
+  task :symlink_shared do
+    # Creates /var/log/rails/<application>-<stage> and migrates any existing logs.
+    run "if ! [ -d /var/log/rails/#{application}-#{stage} ]; then #{sudo} mkdir -p /var/log/rails/#{application}-#{stage} && #{sudo} mv #{shared_path}/log/* /var/log/rails/#{application}-#{stage}/; fi"
+    sudo "rm -rf #{shared_path}/log && ln -fs /var/log/rails/#{application}-#{stage} #{shared_path}/log"
+    sudo "chown -R #{httpd_user}:#{httpd_group} /var/log/rails/#{application}-#{stage}/"
+  end
 end
+
+after "stack", "log:symlink_shared"
 

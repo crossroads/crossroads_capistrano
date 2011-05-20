@@ -19,7 +19,7 @@ namespace :ts do
   desc "Start sphinx"
   task :start do
     run "cd #{current_path} && RAILS_ENV=production rake ts:start"
-    run "chown apache:apache #{deploy_to}/shared/log/searchd.production.pid"
+    run "chown #{httpd_user}:#{httpd_group} #{deploy_to}/shared/log/searchd.production.pid"
   end
 
   desc "Restart sphinx"

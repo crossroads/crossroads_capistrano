@@ -1,7 +1,7 @@
 namespace :deploy do
   desc "Show currently deployed revision on server."
   task :revisions, :roles => :app do
-    current, previous, latest = current_revision[0,7], previous_revision[0,7], real_revision[0,7]
+    current, previous, latest = current_revision.to_s[0,7], previous_revision.to_s[0,7], real_revision.to_s[0,7]
     # Following line 'right-aligns' the branch string.
     branch_indent = " "*(i=10-branch.size;i<0 ? 0 : i) << branch.capitalize
     current_is_deployed = current == latest

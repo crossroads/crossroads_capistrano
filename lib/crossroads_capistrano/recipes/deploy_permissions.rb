@@ -1,11 +1,11 @@
 # For apps that are deployed with user permissions.
 # ----------------------------------------------------------
 
-# Our developers use different users on their local machines.
-set :user, case sysuser = `echo $USER`.strip
-when 'warp'  then 'bstillman'
-when 'steve' then 'swkenworthy'
-else sysuser
+# Fetch user from ~/.netrc or $USER.
+set :user, if File.exist?("~/.netrc")
+  File.open(`echo ~/.netrc`.strip, 'r').read[/login ([a-z_]+)/m, 1]
+else
+  `echo $USER`.strip
 end
 
 namespace :deploy do
@@ -17,10 +17,16 @@ namespace :deploy do
   desc "Apache permissions (for passenger)"
   task :apache_permissions do
     unless $apache_permissions
-      sudo "chown -R #{httpd_user}:#{httpd_grp} #{current_path}/"
-      sudo "chown -R #{httpd_user}:#{httpd_grp} #{deploy_to}/shared/"
+      sudo "chown -R #{httpd_user}:#{httpd_group} #{current_path}/"
+      sudo "chown -R #{httpd_user}:#{httpd_group} #{deploy_to}/shared/"
       $apache_permissions = true
     end
+  end
+
+  desc "Set permissions on releases directory so old releases can be removed"
+  task :release_permissions do
+    run "if [ -d #{release_path}/ ]; then #{sudo} chown -R #{httpd_user}:#{httpd_group} #{release_path}/; fi"
+    run "if [ -d #{release_path}/ ]; then #{sudo} chmod -R 755 #{release_path}/; fi"
   end
 end
 
@@ -31,4 +37,5 @@ end
 end
 
 before "deploy:restart", "deploy:apache_permissions"
+before "deploy:cleanup", "deploy:release_permissions"
 

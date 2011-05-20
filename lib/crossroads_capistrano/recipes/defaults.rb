@@ -4,6 +4,7 @@
 # ---------------------------------------------------------
 load File.join(File.dirname(__FILE__), "prompt.rb")
 
+
 # Default settings
 # ---------------------------------------------------------
 set :default_stage, "preview"
@@ -14,7 +15,13 @@ set :keep_releases, 3
 
 set :bundle_without, [:cucumber, :development, :test]
 
+set :httpd_user,  "apache"
+set :httpd_group, "apache"
+
 default_run_options[:pty] = true
 
-set :packages_for_project, nil
+
+# Default hooks
+# ---------------------------------------------------------
+after  "deploy:restart",  "deploy:cleanup"
 
