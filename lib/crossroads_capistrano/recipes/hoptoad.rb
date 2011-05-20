@@ -4,7 +4,10 @@
 namespace :deploy do
   desc "Notify Hoptoad of the deployment"
   task :notify_hoptoad, :except => { :no_release => true } do
-    require 'active_support/core_ext/string' rescue false
+    begin
+      require 'active_support/core_ext/string'
+    rescue LoadError
+    end
     require 'hoptoad_notifier'
     require File.join(rails_root,'config','initializers','hoptoad')
     require 'hoptoad_tasks'

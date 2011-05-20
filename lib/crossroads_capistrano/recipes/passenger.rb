@@ -26,17 +26,18 @@ namespace :passenger do
   task :install, :roles => :web do
     install_deps
     run "if ! (gem list | grep passenger | grep #{passenger_version}); then gem install passenger --no-rdoc --no-ri --version #{passenger_version} && passenger-install-apache2-module --auto; fi"
-    run "rvm wrapper #{rvm_ruby_string} passenger" if defined?(:rvm_ruby_string) # sets up wrapper for passenger so it can find bundler etc...
+    sudo "rvm wrapper #{rvm_ruby_string} passenger" if defined?(:rvm_ruby_string) # sets up wrapper for passenger so it can find bundler etc...
   end
 
   task :install_deps, :roles => :web do
     yum.install( {:base => %w(curl-devel httpd-devel apr-devel)}, :stable )
+    sudo "rm -rf /etc/httpd/conf.d/ssl.conf"
   end
 
   desc "Apache config files: uses special variables @DEPLOY_TO@ @IP_ADDR@ @SERVER_NAME@ @PASSENGER_ROOT@ @RUBY_ROOT@"
   task :config, :roles => :web do
-    sudo "bash -c \"sed -e 's,@DEPLOY_TO@,#{deploy_to},g' -e 's,@IP_ADDR@,#{ip_address},g' -e 's,@SERVER_NAME@,#{site_domain_name},g' #{release_path}/config/httpd-rails.conf > /etc/httpd/sites-enabled/010-#{application}-#{stage}.conf\""
-
+    sudo "cp -f #{release_path}/config/httpd-rails.conf /etc/httpd/sites-enabled/010-#{application}-#{stage}.conf"
+    sudo "sed -i -e 's%@DEPLOY_TO@%#{deploy_to}%g' -e 's%@IP_ADDR@%#{ip_address}%g' -e 's%@SERVER_NAME@%#{site_domain_name}%g' /etc/httpd/sites-enabled/010-#{application}-#{stage}.conf"
     if respond_to?(:rvm_ruby_string)  # Deploying with RVM
       ruby_root = "/usr/local/rvm/wrappers/#{rvm_ruby_string}/ruby"
       passenger_root = "/usr/local/rvm/gems/#{rvm_ruby_string}/gems/passenger-#{passenger_version}"
@@ -45,8 +46,8 @@ namespace :passenger do
       passenger_root = capture("pass_path=`gem which phusion_passenger` && echo ${pass_path%/lib/phusion_passenger.rb}")
     end
     sed_args = "-e 's%@PASSENGER_ROOT@%#{passenger_root.strip}%g' -e 's%@RUBY_ROOT@%#{ruby_root.strip}%g'"
-
-    sudo "bash -c \"sed #{sed_args} #{release_path}/config/passenger.conf > /etc/httpd/mods-enabled/passenger.conf\""
+    sudo "cp -f #{release_path}/config/passenger.conf /etc/httpd/mods-enabled/passenger.conf"
+    sudo "sed -i #{sed_args} /etc/httpd/mods-enabled/passenger.conf"
   end
 end
 
