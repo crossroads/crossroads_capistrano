@@ -16,3 +16,5 @@ set :bundle_without, [:cucumber, :development, :test]
 
 default_run_options[:pty] = true
 
+set :packages_for_project, nil
+
