@@ -19,6 +19,15 @@ namespace :deploy do
       sudo "/etc/init.d/httpd #{t}"
     end
   end
+
+  desc "Apache permissions (for passenger)"
+  task :apache_permissions do
+    unless $apache_permissions
+      sudo "chown -R #{httpd_user}:#{httpd_group} #{current_path}/"
+      sudo "chown -R #{httpd_user}:#{httpd_group} #{deploy_to}/shared/"
+      $apache_permissions = true
+    end
+  end
 end
 
 namespace :passenger do
@@ -63,4 +72,5 @@ end
 
 before "deploy:cold",        "passenger:install"
 after  "deploy:update_code", "passenger:config"
+before "deploy:restart",     "deploy:apache_permissions"
 

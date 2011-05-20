@@ -14,14 +14,6 @@ namespace :deploy do
     sudo "chown -R #{user} #{deploy_to}"
     $apache_permissions = false
   end
-  desc "Apache permissions (for passenger)"
-  task :apache_permissions do
-    unless $apache_permissions
-      sudo "chown -R #{httpd_user}:#{httpd_group} #{current_path}/"
-      sudo "chown -R #{httpd_user}:#{httpd_group} #{deploy_to}/shared/"
-      $apache_permissions = true
-    end
-  end
 
   desc "Set permissions on releases directory so old releases can be removed"
   task :release_permissions do
@@ -36,6 +28,5 @@ end
   after  t, "deploy:apache_permissions"
 end
 
-before "deploy:restart", "deploy:apache_permissions"
 before "deploy:cleanup", "deploy:release_permissions"
 

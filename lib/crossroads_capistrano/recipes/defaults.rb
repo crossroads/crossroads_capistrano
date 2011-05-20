@@ -20,8 +20,18 @@ set :httpd_group, "apache"
 
 default_run_options[:pty] = true
 
+# Default tasks
+# ---------------------------------------------------------
+namespace :deploy do
+  desc "Symlink Shared config files into release path."
+  task :symlink_config do
+    run "ln -sf #{shared_path}/config/*.yml #{release_path}/config/"
+  end
+end
+
 
 # Default hooks
 # ---------------------------------------------------------
+before "deploy:symlink",  "deploy:symlink_config"
 after  "deploy:restart",  "deploy:cleanup"
 
