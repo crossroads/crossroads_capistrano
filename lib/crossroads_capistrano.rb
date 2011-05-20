@@ -8,6 +8,11 @@ if defined?(Capistrano::Configuration) && Capistrano::Configuration.instance
   Capistrano::Configuration.instance(:must_exist).load do
     set :rails_root, Dir.pwd   # For tasks that need the root directory
 
+    # Load defaults unless explicitly told not to.
+    unless $no_default
+      load File.join(File.dirname(__FILE__), "crossroads_capistrano/recipes/defaults.rb")
+    end
+
     def load_crossroads_recipes(recipes)
       if recipes == :all
         # Load all available crossroads_recipes.
