@@ -19,11 +19,11 @@ password: #{ldap_bind_password}
     EOF
 
     put ldap_yml, "/tmp/ldap.yml"
-    sudo "mv /tmp/ldap.yml #{deploy_to}/shared/config/ldap.yml"
+    sudo "mv /tmp/ldap.yml #{shared_path}/config/ldap.yml"
   end
 
   task :symlink do
-    sudo "ln -sf #{deploy_to}/shared/config/ldap.yml #{release_path}/config/ldap.yml"
+    sudo "ln -sf #{shared_path}/config/ldap.yml #{release_path}/config/ldap.yml"
   end
 
 end

@@ -22,9 +22,7 @@ namespace :log do
       run "gzip -c #{shared_path}/log/production.log > #{shared_path}/log/production.log.gz"
       `rm -f /tmp/production.log.gz`
       puts "Downloading #{shared_path}/log/production.log...\n"
-      download("#{shared_path}/log/production.log.gz", "/tmp/production.log.gz", :via => :scp)  do |channel, name, received, total|
-        print "\r   #{name}: #{(Float(received)/total*100).to_i}% complete..."
-      end
+      get_with_status "#{shared_path}/log/production.log.gz", "/tmp/production.log.gz", :via => :scp
       run "rm -f #{shared_path}/log/production.log.gz"
       `gzip -fd /tmp/production.log.gz`
       puts "File can be accessed at /tmp/production.log"

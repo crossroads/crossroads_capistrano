@@ -5,7 +5,7 @@ namespace :newrelic do
 
   desc "Copy newrelic.yml"
   task :yml do
-    run "ln -sf #{deploy_to}/shared/config/newrelic.yml #{release_path}/config/newrelic.yml"
+    run "ln -sf #{shared_path}/config/newrelic.yml #{release_path}/config/newrelic.yml"
   end
 end
 

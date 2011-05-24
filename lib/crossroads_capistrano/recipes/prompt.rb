@@ -4,9 +4,19 @@
 # 'var'     -> variable
 # 'default' -> default value set if no user input is received.
 
-def prompt_with_default(prompt, var, default)
+def prompt_with_default(prompt, var, default=nil)
   set(var) do
-    Capistrano::CLI.ui.ask "#{prompt} [#{default}]: "
+    # Append default in brackets to prompt if default is not blank.
+    if default != "" && !default.nil?
+      prompt << " [#{default}]"
+    end
+    # Keep passwords hidden.
+    if prompt.downcase.include?('password')
+      Capistrano::CLI.password_prompt("       #{prompt}: ")
+    else
+      Capistrano::CLI.ui.ask("       #{prompt}: ")
+    end
   end
   set var, default if eval("#{var.to_s}.empty?")
 end
+

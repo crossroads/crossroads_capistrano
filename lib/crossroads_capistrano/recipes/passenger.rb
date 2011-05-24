@@ -24,7 +24,7 @@ namespace :deploy do
   task :apache_permissions do
     unless $apache_permissions
       sudo "chown -R #{httpd_user}:#{httpd_group} #{current_path}/"
-      sudo "chown -R #{httpd_user}:#{httpd_group} #{deploy_to}/shared/"
+      sudo "chown -R #{httpd_user}:#{httpd_group} #{shared_path}/"
       $apache_permissions = true
     end
   end
@@ -35,7 +35,7 @@ namespace :passenger do
   task :install, :roles => :web do
     install_deps
     run "if ! (gem list | grep passenger | grep #{passenger_version}); then gem install passenger --no-rdoc --no-ri --version #{passenger_version} && passenger-install-apache2-module --auto; fi"
-    sudo "rvm wrapper #{rvm_ruby_string} passenger" if defined?(:rvm_ruby_string) # sets up wrapper for passenger so it can find bundler etc...
+    sudo "rvm wrapper #{rvm_ruby_string} passenger" if respond_to?(:rvm_ruby_string) # sets up wrapper for passenger so it can find bundler etc...
   end
 
   task :install_deps, :roles => :web do
@@ -46,31 +46,38 @@ namespace :passenger do
   desc "Apache config files: uses special variables @DEPLOY_TO@ @IP_ADDR@ @SERVER_NAME@ @PASSENGER_ROOT@ @RUBY_ROOT@"
   task :config, :roles => :web do
     # You can set the following paths from your deploy.rb file, if needed.
-    unless defined?(httpd_site_conf_path)
+    unless respond_to?(:httpd_site_conf_path)
       httpd_site_conf_path = "/etc/httpd/sites-enabled/010-#{application}-#{stage}.conf"
     end
-    unless defined?(passenger_conf_path)
+    unless respond_to?(:passenger_conf_path)
       passenger_conf_path = "/etc/httpd/mods-enabled/passenger.conf"
     end
 
     if respond_to?(:rvm_ruby_string)  # Deploying with RVM
-      ruby_root = "/usr/local/rvm/wrappers/#{rvm_ruby_string}/ruby"
+      ruby_root      = "/usr/local/rvm/wrappers/#{rvm_ruby_string}/ruby"
       passenger_root = "/usr/local/rvm/gems/#{rvm_ruby_string}/gems/passenger-#{passenger_version}"
     else  # System Ruby
-      ruby_root = capture("which ruby")
-      passenger_root = capture("pass_path=`gem which phusion_passenger` && echo ${pass_path%/lib/phusion_passenger.rb}")
+      ruby_root      = capture("which ruby").strip
+      gem_path       = capture("ruby -r rubygems -e 'p Gem.path.detect{|p|p.include? \"/usr\"}'").strip.gsub('"','')
+      passenger_root = "#{gem_path}/gems/passenger-#{passenger_version}"
     end
-    sed_args = "-e 's%@PASSENGER_ROOT@%#{passenger_root.strip}%g' -e 's%@RUBY_ROOT@%#{ruby_root.strip}%g'"
     # httpd conf
     sudo "cp -f #{release_path}/config/httpd-rails.conf #{httpd_site_conf_path}"
-    sudo "sed -i -e 's%@DEPLOY_TO@%#{deploy_to}%g' -e 's%@IP_ADDR@%#{ip_address}%g' -e 's%@SERVER_NAME@%#{site_domain_name}%g' #{httpd_site_conf_path}"
+    sed httpd_site_conf_path, {"DEPLOY_TO"        => deploy_to,
+                               "IP_ADDR"          => ip_address,
+                               "SERVER_NAME"      => site_domain_name,
+                               "SITE_DOMAIN_NAME" => site_domain_name,
+                               "HTTP_PORT"        => http_port,
+                               "HTTPS_PORT"       => https_port}
     # passenger conf
     sudo "cp -f #{release_path}/config/passenger.conf #{passenger_conf_path}"
-    sudo "sed -i #{sed_args} #{passenger_conf_path}"
+    sed passenger_conf_path,  {"PASSENGER_ROOT"   => passenger_root,
+                               "RUBY_ROOT"        => ruby_root}
   end
 end
 
 before "deploy:cold",        "passenger:install"
 after  "deploy:update_code", "passenger:config"
+before "deploy:start",       "deploy:apache_permissions"
 before "deploy:restart",     "deploy:apache_permissions"
 

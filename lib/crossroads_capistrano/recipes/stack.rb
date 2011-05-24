@@ -1,46 +1,68 @@
-require File.expand_path('../yum', __FILE__)
+load File.join(File.dirname(__FILE__), 'yum.rb')
 
-# Installs minimal system software stack. Runs before "cap deploy:cold"
+# Installs minimal system software stack. Runs before deploy:cold
+
+before "deploy:cold",  "stack:setup"
 
 namespace :stack do
   desc "Setup operating system and rails environment"
-  task :default do
+  task :setup do
     yum.update
-    yum.install( {:base => packages_for_project}, :stable ) if defined?(packages_for_project)
-    install.bundler
+    yum.install({:base => yum_packages}, :stable ) if respond_to?(:yum_packages)
+    gemrc.setup
+    bundler.setup
     deploy.setup
     shared.setup
+    config.setup
+    db.config.setup
+    netrc.setup if needs_netrc
     shared.permissions
   end
-  namespace :install do
+  namespace :bundler do
     desc "Install Bundler"
-    task :bundler do
-      run "gem install bundler --no-rdoc --no-ri"
+    task :setup do
+      run "gem install bundler"
     end
   end
 end
 
-namespace 'shared' do
+namespace :shared do
   # This task can be extended by the application via an :after hook.
   desc "Setup shared directory"
   task :setup do
-    sudo "mkdir -p #{deploy_to}/shared/config"
+    sudo "mkdir -p #{shared_path}/config"
   end
 
   desc "Set permissions on shared directory"
   task :permissions do
-    sudo "chown -R #{httpd_user}:#{httpd_group} #{deploy_to}/shared/"
-    sudo "chmod -R 755 #{deploy_to}/shared/"
+    sudo "chown -R #{httpd_user}:#{httpd_group} #{shared_path}/"
+    sudo "chmod -R 755 #{shared_path}/"
   end
 end
 
-namespace :deploy do
-  desc "Check for project dependencies"
-  task :check_dependencies, :roles => :db, :only => { :primary => true } do
-    sudo "cd #{current_path} && RAILS_ENV=production rake check_dependencies"
+namespace :gemrc do
+  desc "Setup ~/.gemrc file to avoid rdoc and ri generation"
+  task :setup do
+    puts "\n ** == Configuring ~/.gemrc ...\n\n"
+    home_dir = capture("#{sudo} echo ~").strip
+    put "gem: --no-ri --no-rdoc", "#{home_dir}/.gemrc"
   end
 end
 
-before "deploy:cold",  "stack"
-after  "deploy:check", "deploy:check_dependencies"
+namespace :netrc do
+  desc "Setup ~/.netrc file for internal git https auth"
+  task :setup do
+    puts "\n ** == Configuring ~/.netrc ...\n\n"
+    prompt_with_default("Netrc Machine",  :netrc_machine,  "svn.globalhand.org")
+    prompt_with_default("Netrc Login",    :netrc_login,    "")
+    prompt_with_default("Netrc Password", :netrc_password, "")
+    netrc = <<-EOF
+machine #{netrc_machine}
+login #{netrc_login}
+password #{netrc_password}
+EOF
+    home_dir = capture("#{sudo} echo ~").strip
+    put netrc, "#{home_dir}/.netrc"
+  end
+end
 
