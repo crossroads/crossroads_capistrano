@@ -50,3 +50,8 @@ namespace :deploy do
   end
 end
 
+
+# Capistrano Fixes
+# ---------------------------------------------------------
+set(:current_release) { File.join(releases_path, releases.last.to_s) }
+

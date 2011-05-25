@@ -55,17 +55,22 @@ namespace :netrc do
   desc "Setup ~/.netrc file for internal git https auth"
   task :setup do
     if capture("ls ~/.netrc").strip == ""
-      puts "\n ** == Configuring ~/.netrc ...\n\n"
+      puts "\n ** == Configuring ~/.netrc ..."
+      puts " **    (Enter 's' to skip this file.)\n\n"
       prompt_with_default("Netrc Machine",  :netrc_machine,  "svn.globalhand.org")
-      prompt_with_default("Netrc Login",    :netrc_login,    "")
-      prompt_with_default("Netrc Password", :netrc_password, "")
-      netrc = <<-EOF
+      if netrc_machine == "s"
+        puts "\n ** ! Skipping ~/.netrc\n\n"
+      else
+        prompt_with_default("Netrc Login",    :netrc_login,    "")
+        prompt_with_default("Netrc Password", :netrc_password, "")
+        netrc = <<-EOF
 machine #{netrc_machine}
 login #{netrc_login}
 password #{netrc_password}
 EOF
-      home_dir = capture("#{sudo} echo ~").strip
-      put netrc, "#{home_dir}/.netrc"
+        home_dir = capture("#{sudo} echo ~").strip
+        put netrc, "#{home_dir}/.netrc"
+      end
     else
       puts "\n ** == ~/.netrc already exists!\n\n"
     end
