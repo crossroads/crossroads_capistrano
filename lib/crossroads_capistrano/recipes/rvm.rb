@@ -5,8 +5,8 @@ namespace :rvm do
   desc "Install rvm"
   task :install, :roles => :web do
     install_deps
-    sudo "if ! (which rvm); then bash < <(curl -s https://rvm.beginrescueend.com/install/rvm) ); fi", :shell => 'sh'
-    sudo "if ! (rvm list | grep #{rvm_ruby_string}); then rvm install #{rvm_ruby_string}; fi", :shell => 'sh'
+    run "if ! [ -e #{rvm_bin_path}/rvm ]; then #{sudo} bash -c \"curl -s https://rvm.beginrescueend.com/install/rvm | bash\"; fi", :shell => 'sh'
+    run "if ! (#{rvm_bin_path}/rvm list | grep #{rvm_ruby_string}); then #{sudo} #{rvm_bin_path}/rvm install #{rvm_ruby_string}; fi", :shell => 'sh'
   end
 
   task :install_deps, :roles => :web do
