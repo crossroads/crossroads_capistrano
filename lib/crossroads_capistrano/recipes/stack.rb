@@ -14,10 +14,12 @@ namespace :stack do
     deploy.setup
     shared.setup
     config.setup
-    db.config.setup
-    netrc.setup if needs_netrc
+    db.config.setup if respond_to?(:db)
     shared.permissions
+    netrc.setup     if needs_netrc?
+    ssh_key.setup   if needs_ssh_key?
   end
+
   namespace :bundler do
     desc "Install Bundler"
     task :setup do
@@ -52,17 +54,30 @@ end
 namespace :netrc do
   desc "Setup ~/.netrc file for internal git https auth"
   task :setup do
-    puts "\n ** == Configuring ~/.netrc ...\n\n"
-    prompt_with_default("Netrc Machine",  :netrc_machine,  "svn.globalhand.org")
-    prompt_with_default("Netrc Login",    :netrc_login,    "")
-    prompt_with_default("Netrc Password", :netrc_password, "")
-    netrc = <<-EOF
+    if capture("ls ~/.netrc").strip == ""
+      puts "\n ** == Configuring ~/.netrc ...\n\n"
+      prompt_with_default("Netrc Machine",  :netrc_machine,  "svn.globalhand.org")
+      prompt_with_default("Netrc Login",    :netrc_login,    "")
+      prompt_with_default("Netrc Password", :netrc_password, "")
+      netrc = <<-EOF
 machine #{netrc_machine}
 login #{netrc_login}
 password #{netrc_password}
 EOF
-    home_dir = capture("#{sudo} echo ~").strip
-    put netrc, "#{home_dir}/.netrc"
+      home_dir = capture("#{sudo} echo ~").strip
+      put netrc, "#{home_dir}/.netrc"
+    else
+      puts "\n ** == ~/.netrc already exists!\n\n"
+    end
+  end
+end
+
+namespace :ssh_key do
+  desc "Generate ssh key for adding to GitHub public keys, etc."
+  task :setup do
+    puts "\n    If capistrano stops here then paste the following key into GitHub and"
+    puts   "    run \"cap deploy:cold\" again\n\n"
+    run  "    if ! (ls $HOME/.ssh/id_rsa); then (ssh-keygen -N '' -t rsa -q -f $HOME/.ssh/id_rsa && cat $HOME/.ssh/id_rsa.pub) && exit 1; fi"
   end
 end
 
