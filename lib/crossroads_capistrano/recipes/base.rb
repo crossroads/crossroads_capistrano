@@ -36,6 +36,9 @@ def needs_ssh_key?; repository.include?("github.com"); end
 before "deploy:symlink",  "deploy:symlink_config"
 after  "deploy:restart",  "deploy:cleanup"
 
+# Deployment tasks that need an after hook to notify hoptoad/newrelic/etc.
+NotificationTasks = ["deploy", "deploy:migrations", "deploy:cold", "deploy:rollback"]
+
 
 # Misc. Tasks
 # ---------------------------------------------------------

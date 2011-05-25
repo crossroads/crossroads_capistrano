@@ -43,7 +43,7 @@ namespace :passenger do
     sudo "rm -rf /etc/httpd/conf.d/ssl.conf"
   end
 
-  desc "Apache config files: uses special variables @DEPLOY_TO@ @IP_ADDR@ @SERVER_NAME@ @PASSENGER_ROOT@ @RUBY_ROOT@"
+  desc "Set up Apache and Passenger config files"
   task :config, :roles => :web do
     # You can set the following paths from your deploy.rb file, if needed.
     set :httpd_site_conf_path, "/etc/httpd/sites-enabled/010-#{application}-#{stage}.conf" unless exists?(:httpd_site_conf_path)

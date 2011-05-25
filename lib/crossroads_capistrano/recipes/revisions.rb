@@ -28,5 +28,5 @@ namespace :deploy do
   end
 end
 
-after "deploy", "deploy:revisions"
+after NotificationTasks, "deploy:revisions"
 
