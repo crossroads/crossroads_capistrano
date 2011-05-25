@@ -34,8 +34,8 @@ namespace :passenger do
   desc "Install Passenger"
   task :install, :roles => :web do
     install_deps
-    run "if ! (gem list | grep passenger | grep #{passenger_version}); then gem install passenger --no-rdoc --no-ri --version #{passenger_version} && passenger-install-apache2-module --auto; fi"
-    sudo "rvm wrapper #{rvm_ruby_string} passenger" if respond_to?(:rvm_ruby_string) # sets up wrapper for passenger so it can find bundler etc...
+    passenger_install_cmd = (exists?(:rvm_ruby_string) ? "rvmsudo " : "") << "passenger-install-apache2-module --auto" # sets up ruby wrapper correctly
+    run "if ! (gem list | grep passenger | grep #{passenger_version}); then gem install passenger --no-rdoc --no-ri --version #{passenger_version} && #{passenger_install_cmd}; fi"
   end
 
   task :install_deps, :roles => :web do
