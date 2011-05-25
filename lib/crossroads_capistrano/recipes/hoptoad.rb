@@ -5,7 +5,7 @@ namespace :deploy do
   desc "Notify Hoptoad of the deployment"
   task :notify_hoptoad, :except => { :no_release => true } do
     if ARGV.include?("-n")
-      puts "\n ** Dry run, not notifying hoptoad.\n\n"
+      puts "\n ** Dry run, not notifying Hoptoad.\n\n"
     else
       begin
         require 'active_support/core_ext/string'
@@ -36,6 +36,5 @@ namespace :deploy do
   end
 end
 
-after "deploy",            "deploy:notify_hoptoad"
-after "deploy:migrations", "deploy:notify_hoptoad"
+after NotificationTasks, "deploy:notify_hoptoad"
 

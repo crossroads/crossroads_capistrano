@@ -1,13 +1,21 @@
-namespace :newrelic do
-  task :default do
-    newrelic.yml
-  end
+require 'new_relic/recipes'
 
-  desc "Copy newrelic.yml"
-  task :yml do
-    run "ln -sf #{shared_path}/config/newrelic.yml #{release_path}/config/newrelic.yml"
+namespace :deploy do
+  desc "Notify New Relic of the deployment"
+  task :notify_newrelic, :except => { :no_release => true } do
+    if stage.to_s == 'live'
+      if File.exists?('config/newrelic.yml')
+        if ARGV.include?("-n")
+          puts "\n ** Dry run, not notifying New Relic.\n\n"
+        else
+          newrelic.notice_deployment
+        end
+      else
+        puts "\n !! You need to set up 'config/newrelic.yml'.\n    You can copy the shared/config files from a server by running 'cap config:pull'.\n\n"
+      end
+    end
   end
 end
 
-before "deploy:symlink", "newrelic:yml"
+after NotificationTasks, "deploy:notify_newrelic"
 
