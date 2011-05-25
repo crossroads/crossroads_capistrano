@@ -1,5 +1,3 @@
-require File.join(File.dirname(__FILE__), 'prompt')
-
 namespace :ldap do
   desc "Create the LDAP configuration file"
   task :config do
