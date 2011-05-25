@@ -46,12 +46,8 @@ namespace :passenger do
   desc "Apache config files: uses special variables @DEPLOY_TO@ @IP_ADDR@ @SERVER_NAME@ @PASSENGER_ROOT@ @RUBY_ROOT@"
   task :config, :roles => :web do
     # You can set the following paths from your deploy.rb file, if needed.
-    unless respond_to?(:httpd_site_conf_path)
-      httpd_site_conf_path = "/etc/httpd/sites-enabled/010-#{application}-#{stage}.conf"
-    end
-    unless respond_to?(:passenger_conf_path)
-      passenger_conf_path = "/etc/httpd/mods-enabled/passenger.conf"
-    end
+    set :httpd_site_conf_path, "/etc/httpd/sites-enabled/010-#{application}-#{stage}.conf" unless exists?(:httpd_site_conf_path)
+    set :passenger_conf_path, "/etc/httpd/mods-enabled/passenger.conf" unless exists?(:passenger_conf_path)
 
     if respond_to?(:rvm_ruby_string)  # Deploying with RVM
       ruby_root      = "/usr/local/rvm/wrappers/#{rvm_ruby_string}/ruby"
