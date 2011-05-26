@@ -24,7 +24,7 @@ end
 # Replaces strings in a file, i.e. @SOME_STRING@ is replaced with 'replacement'
 def sed(file, args, char="@")
   cmd = "sed -i #{file} " << args.map{|k,v|"-e 's%#{char}#{k}#{char}%#{v}%g'"}.join(" ")
-  exists?(:use_sudo) && !use_sudo ? run cmd : sudo cmd
+  (exists?(:use_sudo) && !use_sudo) ? run(cmd) : sudo(cmd)
 end
 
 # Helper function which prompts for user input.

@@ -3,7 +3,7 @@ $:.push File.expand_path("../lib", __FILE__)
 
 Gem::Specification.new do |s|
   s.name        = "crossroads_capistrano"
-  s.version     = "1.4.8"
+  s.version     = "1.4.9"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Steve Kenworthy", "Ben Tillman", "Nathan Broadbent"]
   s.email       = ["it_dept@crossroads.org.hk"]
