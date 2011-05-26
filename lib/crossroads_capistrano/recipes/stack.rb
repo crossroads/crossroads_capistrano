@@ -8,7 +8,7 @@ namespace :stack do
   desc "Setup operating system and rails environment"
   task :setup do
     yum.update
-    yum.install({:base => yum_packages}, :stable ) if respond_to?(:yum_packages)
+    yum.install({:base => yum_packages}, :stable ) if exists?(:yum_packages)
     gemrc.setup
     bundler.setup
     deploy.setup
