@@ -56,7 +56,7 @@ end
 namespace :netrc do
   desc "Setup ~/.netrc file for internal git https auth"
   task :setup do
-    if !remote_file_exists?("~/.netrc")
+    if !remote_file_exists?("~/.netrc") || ARGV.include?("netrc:setup")
       puts "\n ** == Configuring ~/.netrc ..."
       puts " **    (Enter 's' to skip this file.)\n\n"
       prompt_with_default("Netrc Machine",  :netrc_machine,  "svn.globalhand.org")
