@@ -1,15 +1,16 @@
 # Crossroads shared capistrano recipes
 
 if defined?(Capistrano::Configuration) && Capistrano::Configuration.instance
-  require 'capistrano/ext/multistage'
-  require 'bundler/capistrano' unless $no_bundler rescue LoadError
   require 'capistrano_colors' rescue LoadError puts "Capistrano Colors is not installed."
-
   Capistrano::Configuration.instance(:must_exist).load do
+    # Require multistage & bundler unless disabled.
+    require 'capistrano/ext/multistage' if fetch(:multistage, true)
+    require 'bundler/capistrano' if fetch(:bundler, true) rescue LoadError
+
     set :rails_root, Dir.pwd   # For tasks that need the root directory
 
-    # Load base defaults unless explicitly told not to.
-    unless $no_base
+    # Load base defaults unless disabled.
+    if fetch(:base_defaults, true)
       load File.join(File.dirname(__FILE__), "crossroads_capistrano/recipes/base.rb")
     end
 

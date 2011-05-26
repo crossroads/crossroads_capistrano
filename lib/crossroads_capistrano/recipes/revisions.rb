@@ -5,7 +5,7 @@ namespace :deploy do
     # Following line 'right-aligns' the branch string.
     branch_indent = " "*(i=10-branch.size;i<0 ? 0 : i) << branch.capitalize
     current_is_deployed = current == latest
-    puts "\n  * \033[0;32m== Showing revisions and diffs for [\033[1;32m#{application} #{stage}\033[0;32m]\033[0m\n\n"
+    puts "\n  * \033[0;32m== Showing revisions and diffs for [\033[1;32m#{application}#{exists?(:stage) ? ' ' << stage : ''}\033[0;32m]\033[0m\n\n"
     puts "         \033[1;33m#{branch_indent} Branch: \033[1;37m#{latest}\033[0m"
     puts "         \033[#{current == latest ? 1 : 0};33mDeployed Revision: \033[#{current == latest ? 1 : 0};37m#{current}\033[0m"
     puts "         \033[#{previous == latest ? 1 : 0};33mPrevious Revision: \033[#{previous == latest ? 1 : 0};37m#{previous}\033[0m\n\n"
