@@ -51,6 +51,10 @@ namespace :deploy do
   task :check_dependencies, :roles => :db, :only => { :primary => true } do
     sudo "cd #{current_path} && RAILS_ENV=production rake check_dependencies"
   end
+  desc "Remove cached-copy (when switching to a new repository, etc.)"
+  task :remove_cached_copy, :roles => :db, :only => { :primary => true } do
+    sudo "rm -rf #{shared_path}/cached-copy"
+  end
 end
 
 
