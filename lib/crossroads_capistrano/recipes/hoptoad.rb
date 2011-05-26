@@ -7,10 +7,7 @@ namespace :deploy do
     if ARGV.include?("-n")
       puts "\n ** Dry run, not notifying Hoptoad.\n\n"
     else
-      begin
-        require 'active_support/core_ext/string'
-      rescue Exception
-      end
+      require 'active_support/core_ext/string' if rails_version == 3
       require 'hoptoad_notifier'
       require File.join(rails_root,'config','initializers','hoptoad')
       require 'hoptoad_tasks'

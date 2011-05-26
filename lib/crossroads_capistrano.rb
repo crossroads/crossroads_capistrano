@@ -3,11 +3,11 @@
 if defined?(Capistrano::Configuration) && Capistrano::Configuration.instance
   require 'capistrano_colors' rescue LoadError puts "Capistrano Colors is not installed."
   Capistrano::Configuration.instance(:must_exist).load do
-    # Require multistage & bundler unless disabled.
-    require 'capistrano/ext/multistage' if fetch(:multistage, true)
-    require 'bundler/capistrano' if fetch(:bundler, true) rescue LoadError
-
     set :rails_root, Dir.pwd   # For tasks that need the root directory
+    
+    # Automatically detect whether multistage & bundler need to be required.
+    require 'capistrano/ext/multistage' if File.exists?(File.join(fetch(:rails_root), 'config', 'deploy'))
+    require 'bundler/capistrano'        if File.exists?(File.join(fetch(:rails_root), 'Gemfile'))
 
     # Load base defaults unless disabled.
     if fetch(:base_defaults, true)
