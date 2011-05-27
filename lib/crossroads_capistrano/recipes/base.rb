@@ -4,9 +4,9 @@
 
 # Recipes
 # ---------------------------------------------------------
+load File.join(File.dirname(__FILE__), "core_ext.rb")
 load File.join(File.dirname(__FILE__), "helper_methods.rb")
 load File.join(File.dirname(__FILE__), "config.rb")
-
 
 # Settings
 # ---------------------------------------------------------
