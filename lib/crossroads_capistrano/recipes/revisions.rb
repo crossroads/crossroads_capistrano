@@ -17,7 +17,7 @@ namespace :deploy do
                                                ["previous revision", "deployed revision", previous, current]
 
     # Show difference between master and deployed revisions.
-    if (diff = `git log #{base_rev}..#{new_rev} --oneline`) != ""
+    if (diff = `git log #{base_rev}..#{new_rev} --oneline 2>&1`) != ""
       if diff.include?("unknown revision or path not in the working tree")
         puts "  * You have deployed code that is not in your local repo.\n" +
              "    Please run 'git pull', then 'cap#{stage_str} deploy:revisions'"
