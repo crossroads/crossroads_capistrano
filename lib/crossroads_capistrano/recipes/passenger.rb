@@ -73,7 +73,7 @@ namespace :passenger do
 end
 
 before "deploy:cold",        "passenger:install"
-after  "deploy:update_code", "passenger:config"
+after  "deploy:update_code", "passenger:config" unless (exists?(:no_passenger_conf) && no_passenger_conf)
 before "deploy:start",       "deploy:apache_permissions"
 before "deploy:restart",     "deploy:apache_permissions"
 
