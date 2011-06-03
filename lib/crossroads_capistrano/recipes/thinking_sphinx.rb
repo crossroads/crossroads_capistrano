@@ -1,11 +1,5 @@
 namespace :ts do
 
-  desc "Links the sphinx database files by inserting magic code"
-  task :symlink do
-    sed "#{release_path}/script/link_sphinx.rb", {"DEPLOY_TO" => "shared"}
-    run "#{release_path}/script/runner -e production #{release_path}/script/link_sphinx.rb"
-  end
-
   desc "Index data for Sphinx using Thinking Sphinx's settings"
   task :in do
     run "cd #{current_path} && RAILS_ENV=production rake ts:in"
@@ -46,4 +40,3 @@ and no need for recovery."""
   end
 
 end
-
