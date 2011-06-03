@@ -1,13 +1,7 @@
 #
 # Updates the crontab using wheneverize
 #
+require 'whenever/capistrano'
 
-namespace :deploy do
-  desc "Update the crontab file"
-  task :update_crontab, :roles => :db do
-    run "cd #{current_path} && bundle exec whenever --update-crontab #{application}"
-  end
-end
-
-after "deploy:symlink", "deploy:update_crontab"
+set :whenever_command, "bundle exec whenever" if fetch(:bundler, true)
 

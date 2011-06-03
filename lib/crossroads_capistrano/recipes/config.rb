@@ -5,8 +5,7 @@ namespace :config do
     puts "      - In order to skip a file, you just need to leave any prompt blank."
     puts "      - You will need to edit the '.yml.example' files to change any hard-coded values."
 
-    (Dir.glob("config/*.yml.example") +
-     Dir.glob("config/*.yml.#{stage}.example")).each do |config_file|
+    (Dir.glob("config/*.yml.example")).each do |config_file|
       unless config_file.include?("database.yml")
         skip_file = false
         filename = File.basename(config_file).gsub(/.example$/,'')

@@ -7,8 +7,10 @@ before "deploy:cold",  "stack:setup"
 namespace :stack do
   desc "Setup operating system and rails environment"
   task :setup do
-    yum.update
-    yum.install({:base => yum_packages}, :stable ) if respond_to?(:yum_packages)
+    if exists?(:yum_packages)
+      yum.update
+      yum.install({:base => yum_packages}, :stable)
+    end
     gemrc.setup
     bundler.setup
     deploy.setup
@@ -54,7 +56,7 @@ end
 namespace :netrc do
   desc "Setup ~/.netrc file for internal git https auth"
   task :setup do
-    if capture("ls ~/.netrc").strip == ""
+    if !remote_file_exists?("~/.netrc") || ARGV.include?("netrc:setup")
       puts "\n ** == Configuring ~/.netrc ..."
       puts " **    (Enter 's' to skip this file.)\n\n"
       prompt_with_default("Netrc Machine",  :netrc_machine,  "svn.globalhand.org")

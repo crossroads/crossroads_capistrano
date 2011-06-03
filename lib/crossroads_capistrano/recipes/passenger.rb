@@ -49,7 +49,7 @@ namespace :passenger do
     set :httpd_site_conf_path, "/etc/httpd/sites-enabled/010-#{application}-#{stage}.conf" unless exists?(:httpd_site_conf_path)
     set :passenger_conf_path, "/etc/httpd/mods-enabled/passenger.conf" unless exists?(:passenger_conf_path)
 
-    if respond_to?(:rvm_ruby_string)  # Deploying with RVM
+    if exists?(:rvm_ruby_string)  # Deploying with RVM
       ruby_root      = "/usr/local/rvm/wrappers/#{rvm_ruby_string}/ruby"
       passenger_root = "/usr/local/rvm/gems/#{rvm_ruby_string}/gems/passenger-#{passenger_version}"
     else  # System Ruby
@@ -73,7 +73,7 @@ namespace :passenger do
 end
 
 before "deploy:cold",        "passenger:install"
-after  "deploy:update_code", "passenger:config"
+after  "deploy:update_code", "passenger:config" unless (exists?(:no_passenger_conf) && no_passenger_conf)
 before "deploy:start",       "deploy:apache_permissions"
 before "deploy:restart",     "deploy:apache_permissions"
 

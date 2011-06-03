@@ -4,9 +4,9 @@
 
 # Recipes
 # ---------------------------------------------------------
+load File.join(File.dirname(__FILE__), "core_ext.rb")
 load File.join(File.dirname(__FILE__), "helper_methods.rb")
 load File.join(File.dirname(__FILE__), "config.rb")
-
 
 # Settings
 # ---------------------------------------------------------
@@ -50,6 +50,10 @@ namespace :deploy do
   desc "Check for project dependencies"
   task :check_dependencies, :roles => :db, :only => { :primary => true } do
     sudo "cd #{current_path} && RAILS_ENV=production rake check_dependencies"
+  end
+  desc "Remove cached-copy (when switching to a new repository, etc.)"
+  task :remove_cached_copy, :roles => :db, :only => { :primary => true } do
+    sudo "rm -rf #{shared_path}/cached-copy"
   end
 end
 

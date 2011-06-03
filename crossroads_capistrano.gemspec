@@ -3,7 +3,7 @@ $:.push File.expand_path("../lib", __FILE__)
 
 Gem::Specification.new do |s|
   s.name        = "crossroads_capistrano"
-  s.version     = "1.4.5"
+  s.version     = "1.4.17"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Steve Kenworthy", "Ben Tillman", "Nathan Broadbent"]
   s.email       = ["it_dept@crossroads.org.hk"]
@@ -17,5 +17,9 @@ Gem::Specification.new do |s|
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
+
+  s.add_dependency('capistrano',        ">= 2.6.0")
+  s.add_dependency('capistrano-ext',    ">= 1.2.1")
+  s.add_dependency('capistrano_colors', ">= 0.5.4")
 end
 
