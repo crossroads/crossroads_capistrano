@@ -1,11 +1,11 @@
 namespace :ldap do
   desc "Create the LDAP configuration file"
   task :config do
-    prompt_with_default("LDAP host", :ldap_host, "ldap.crossroadsint.org")
-    prompt_with_default("LDAP domain", :ldap_domain, "crossroadsint")
-    prompt_with_default("LDAP username", :ldap_bind_username, "ldapuser")
+    prompt_with_default("LDAP host", :ldap_host, "")
+    prompt_with_default("LDAP domain", :ldap_domain, "")
+    prompt_with_default("LDAP username", :ldap_bind_username, "")
     prompt_with_default("LDAP password", :ldap_bind_password, "")
-    prompt_with_default("LDAP search base", :ldap_base_dn, "dc=crossroadsint,dc=org")
+    prompt_with_default("LDAP search base", :ldap_base_dn, "")
     prompt_with_default("LDAP port", :ldap_port, "389")
     ldap_yml = <<-EOF
 host: #{ldap_host}
