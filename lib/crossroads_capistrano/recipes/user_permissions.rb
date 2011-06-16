@@ -2,8 +2,9 @@
 # ----------------------------------------------------------
 
 # Fetch user from ~/.netrc or $USER.
-set :user, if File.exist?("~/.netrc")
-  File.open(`echo ~/.netrc`.strip, 'r').read[/login ([a-z_]+)/m, 1]
+netrc = `echo ~/.netrc`.strip
+set :user, if File.exist?(netrc)
+  File.open(netrc, 'r').read[/login ([a-z_]+)/m, 1]
 else
   `echo $USER`.strip
 end
