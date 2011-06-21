@@ -21,5 +21,6 @@ Gem::Specification.new do |s|
   s.add_dependency('capistrano',        ">= 2.6.0")
   s.add_dependency('capistrano-ext',    ">= 1.2.1")
   s.add_dependency('capistrano_colors', ">= 0.5.4")
+  s.add_dependency('rvm',               ">= 1.6.9")
 end
 
