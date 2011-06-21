@@ -49,7 +49,7 @@ namespace :deploy do
   end
   desc "Check for project dependencies"
   task :check_dependencies, :roles => :db, :only => { :primary => true } do
-    sudo "cd #{current_path} && RAILS_ENV=production rake check_dependencies"
+    sudo "cd #{current_path} && bundle exec rake check_dependencies RAILS_ENV=production"
   end
   desc "Remove cached-copy (when switching to a new repository, etc.)"
   task :remove_cached_copy, :roles => :db, :only => { :primary => true } do
