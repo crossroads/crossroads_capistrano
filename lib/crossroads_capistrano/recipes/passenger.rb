@@ -40,7 +40,6 @@ namespace :passenger do
 
   task :install_deps, :roles => :web do
     yum.install( {:base => %w(curl-devel httpd-devel apr-devel openssl-devel zlib-devel e2fsprogs-devel krb5-devel)}, :stable )
-    sudo "rm -rf /etc/httpd/conf.d/ssl.conf"
   end
 
   desc "Set up Apache and Passenger config files"
