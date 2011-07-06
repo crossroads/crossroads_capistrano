@@ -36,6 +36,12 @@ namespace :log do
     sudo "rm -rf #{shared_path}/log && ln -fs /var/log/rails/#{application}-#{stage} #{shared_path}/log"
     sudo "chown -R #{httpd_user}:#{httpd_group} /var/log/rails/#{application}-#{stage}/"
   end
+
+  desc "Setup logrotate file (Requires /usr/sbin/logrotate and config/logrotate.conf)"
+  task :logrotate do
+    run "if [ -f /usr/sbin/logrotate ] && [ -f #{current_path}/config/logrotate.conf ]; then sed -e 's,@LOG_PATH@,/var/log/rails/#{application}-#{stage},g' #{current_path}/config/logrotate.conf > /etc/logrotate.d/#{application}-#{stage}; fi"
+  end
+
 end
 
 after "stack", "log:symlink_shared"
