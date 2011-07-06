@@ -25,7 +25,7 @@ namespace :stack do
   namespace :bundler do
     desc "Install Bundler"
     task :setup do
-      run "gem install bundler"
+      run "rvmsudo gem install bundler"
     end
   end
 end
