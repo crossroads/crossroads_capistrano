@@ -12,14 +12,14 @@ end
 namespace :deploy do
   desc "Deploy permissions (give user access to everything)"
   task :user_permissions do
-    sudo "chown -R #{user} #{deploy_to}"
+    sudo "chown -R #{user} #{deploy_to}", :shell => 'sh'
     $apache_permissions = false
   end
 
   desc "Set permissions on releases directory so old releases can be removed"
   task :release_permissions do
-    run "if [ -d #{release_path}/ ]; then #{sudo} chown -R #{httpd_user}:#{httpd_group} #{release_path}/; fi"
-    run "if [ -d #{release_path}/ ]; then #{sudo} chmod -R 755 #{release_path}/; fi"
+    run "if [ -d #{release_path}/ ]; then #{sudo} chown -R #{httpd_user}:#{httpd_group} #{release_path}/; fi", :shell => 'sh'
+    run "if [ -d #{release_path}/ ]; then #{sudo} chmod -R 755 #{release_path}/; fi", :shell => 'sh'
   end
 end
 
