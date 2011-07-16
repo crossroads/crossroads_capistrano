@@ -59,7 +59,7 @@ namespace :netrc do
     if !remote_file_exists?("~/.netrc") || ARGV.include?("netrc:setup")
       puts "\n ** == Configuring ~/.netrc ..."
       puts " **    (Enter 's' to skip this file.)\n\n"
-      prompt_with_default("Netrc Machine",  :netrc_machine,  "svn.globalhand.org")
+      prompt_with_default("Netrc Machine",  :netrc_machine,  "code.crossroads.org.hk")
       if netrc_machine == "s"
         puts "\n ** ! Skipping ~/.netrc\n\n"
       else
