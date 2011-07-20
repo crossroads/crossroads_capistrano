@@ -12,11 +12,11 @@ namespace :config do
         puts "\n ** == Configuring #{filename} ...\n\n"
         config = File.open(config_file).read
         # Substitute <%=...%> with evaluated expression. (Very simple ERB)
-        config.gsub!(/<%=(.+)%>/) do |string|
+        config.gsub!(/<%=([^>]+)%>/) do |string|
           eval($1)
         end
         # Substitute {{...}} with user input.
-        config.gsub!(/\{\{(.+)\}\}/) do |string|
+        config.gsub!(/\{\{([^}]+)\}\}/) do |string|
           prompt = $1
           # Keep passwords hidden.
           if prompt.downcase.include?('password')
