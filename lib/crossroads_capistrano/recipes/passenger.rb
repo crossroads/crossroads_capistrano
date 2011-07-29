@@ -64,7 +64,8 @@ namespace :passenger do
                                  "SERVER_NAME"      => site_domain_name,
                                  "SITE_DOMAIN_NAME" => site_domain_name,
                                  "HTTP_PORT"        => http_port,
-                                 "HTTPS_PORT"       => https_port}
+                                 "HTTPS_PORT"       => https_port,
+                                 "RAILS_ENV"        => rails_env}
       # passenger conf
       sudo "cp -f #{release_path}/config/passenger.conf #{passenger_conf_path}"
       sed passenger_conf_path,  {"PASSENGER_ROOT"   => passenger_root,
