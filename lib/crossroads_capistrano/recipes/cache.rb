@@ -7,7 +7,7 @@ namespace :cache do
     end
     desc "Clear memcache"
     task :memcache, :only => { :primary => true } do
-      run "cd #{current_path} && bundle exec rake cache:clear RAILS_ENV=production"
+      run "cd #{current_path} && bundle exec rake cache:clear RAILS_ENV=#{rails_env}"
     end
     desc "Clear view cache (tmp/cache/) used when memcached is unavailable"
     task :view do

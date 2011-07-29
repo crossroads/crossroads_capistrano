@@ -2,17 +2,17 @@ namespace :ts do
 
   desc "Index data for Sphinx using Thinking Sphinx's settings"
   task :in do
-    run "cd #{current_path} && bundle exec rake ts:in RAILS_ENV=production"
+    run "cd #{current_path} && bundle exec rake ts:in RAILS_ENV=#{rails_env}"
   end
 
   desc "Stop sphinx"
   task :stop do
-    run "cd #{current_path} && bundle exec rake ts:stop RAILS_ENV=production"
+    run "cd #{current_path} && bundle exec rake ts:stop RAILS_ENV=#{rails_env}"
   end
 
   desc "Start sphinx"
   task :start do
-    run "cd #{current_path} && bundle exec rake ts:start RAILS_ENV=production"
+    run "cd #{current_path} && bundle exec rake ts:start RAILS_ENV=#{rails_env}"
     run "chown #{httpd_user}:#{httpd_group} #{shared_path}/log/searchd.production.pid"
   end
 
@@ -26,7 +26,7 @@ namespace :ts do
   task :recover do
     stop
     run "cd #{shared_path}/db/sphinx/ && rm -rf production"
-    run "cd #{current_path} && bundle exec rake ts:in RAILS_ENV=production"
+    run "cd #{current_path} && bundle exec rake ts:in RAILS_ENV=#{rails_env}"
     start
   end
 
