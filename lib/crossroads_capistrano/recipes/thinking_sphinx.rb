@@ -13,7 +13,7 @@ namespace :ts do
   desc "Start sphinx"
   task :start do
     run "cd #{current_path} && bundle exec rake ts:start RAILS_ENV=#{rails_env}"
-    run "chown #{httpd_user}:#{httpd_group} #{shared_path}/log/searchd.production.pid"
+    run "chown #{httpd_user}:#{httpd_group} #{shared_path}/log/searchd.#{rails_env}.pid"
   end
 
   desc "Restart sphinx"
