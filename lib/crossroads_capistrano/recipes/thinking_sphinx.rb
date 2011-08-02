@@ -25,7 +25,7 @@ namespace :ts do
   desc "Stop sphinx, delete index files, reindex, and restart sphinx (last resort)"
   task :recover do
     stop
-    run "cd #{shared_path}/db/sphinx/ && rm -rf production"
+    run "cd #{shared_path}/db/sphinx/ && rm -rf #{rails_env}"
     run "cd #{current_path} && bundle exec rake ts:in RAILS_ENV=#{rails_env}"
     start
   end
@@ -36,7 +36,7 @@ are stale and need removing with ts:recover. Run this command a few times over a
 a minute to determine if the files disappear - indicating a successfully completed rotation \
 and no need for recovery."""
   task :recovery_required? do
-    run "if [ x`find #{shared_path}/db/sphinx/production/ -name \*.new.\* | wc -l` == x\"0\" ]; then echo \"Sphinx indexes look intact. Run ts:in to regenerate.\"; else echo \"Sphinx index files *may* be stale. Wait 1 minute and run this command again. Consider running ts:recover if this message appears again\"; fi"
+    run "if [ x`find #{shared_path}/db/sphinx/#{rails_env}/ -name \*.new.\* | wc -l` == x\"0\" ]; then echo \"Sphinx indexes look intact. Run ts:in to regenerate.\"; else echo \"Sphinx index files *may* be stale. Wait 1 minute and run this command again. Consider running ts:recover if this message appears again\"; fi"
   end
 
 end
