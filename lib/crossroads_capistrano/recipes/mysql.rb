@@ -3,6 +3,7 @@ namespace :db do
     desc "Create shared/config/database.yml"
     task :setup do
       puts "\n ** == Configuring config/database.yml (mysql) ...\n\n"
+      prompt_with_default("Database adapter", :db_adapter, "mysql")
       prompt_with_default("Database name", :db_name, "#{application}_#{stage}")
       prompt_with_default("Database username", :db_username, "#{application}_#{stage}")
       prompt_with_default("Database password", :db_password)
@@ -10,7 +11,7 @@ namespace :db do
       prompt_with_default("Database port", :db_port, "3306")
       database_yml = <<-EOF
 production:
-  adapter: mysql
+  adapter: #{db_adapter}
   encoding: utf8
   database: #{db_name}
   username: #{db_username}
@@ -26,7 +27,7 @@ EOF
 
   desc "Download production database to local machine"
   task :pull do
-    prompt_with_default("Database name", :database_name, "#{application}_#{stage}")
+    prompt_with_default("Remote database name", :database_name, "#{application}_#{stage}")
     prompt_with_default("Local role", :local_role, "root")
     prompt_with_default("Overwrite local development db? (y/n)", :overwrite, "y")
 
@@ -38,6 +39,7 @@ EOF
     sudo "rm -rf /tmp/dump.sql", :hosts => first_db_host
     if overwrite.to_s.downcase[0,1] == "y"
       # Import data
+      puts "== Importing data to local database..."
       system "mysql -u #{local_role} #{application}_development < tmp/#{application}_#{stage}_dump.sql"
     end
   end
