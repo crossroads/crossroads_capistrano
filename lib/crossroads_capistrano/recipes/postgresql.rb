@@ -29,6 +29,7 @@ EOF
     prompt_with_default("Database name", :dbname, "#{application}_#{stage}")
     prompt_with_default("Database user", :username, "postgres")
     prompt_with_default("Local role", :local_role, "root")
+    prompt_with_default("Overwrite local db? (y/n)", :overwrite, "y")
     if overwrite.to_s.downcase[0,1] == "y"
       prompt_with_default("Local db name", :local_db, "#{application}_development")
     end
