@@ -36,7 +36,7 @@ EOF
     # Download dumped database
     get_with_status "/tmp/db_dump.sql", "tmp/#{application}_#{stage}_dump.sql", :via => :scp, :hosts => first_db_host
     # Delete dumped database from server
-    sudo "rm -rf /tmp/dump.sql", :hosts => first_db_host
+    sudo "rm -rf /tmp/db_dump.sql", :hosts => first_db_host
     if overwrite.to_s.downcase[0,1] == "y"
       # Import data
       puts "== Importing data to local database..."

@@ -32,7 +32,7 @@ EOF
     prompt_with_default("Overwrite local development db? (y/n)", :overwrite, "y")
 
     # Dump database
-    sudo "pg_dump -U #{username} #{dbname} > /tmp/dump.sql", :hosts => first_db_host
+    sudo "pg_dump -U #{username} #{dbname} > /tmp/db_dump.sql", :hosts => first_db_host
     # Download dumped database
     get_with_status "/tmp/db_dump.sql", "tmp/#{application}_#{stage}_dump.sql", :via => :scp, :hosts => first_db_host
     # Delete dumped database from server
