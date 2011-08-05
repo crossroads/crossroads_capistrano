@@ -28,8 +28,11 @@ EOF
   task :pull do
     prompt_with_default("Database name", :dbname, "#{application}_#{stage}")
     prompt_with_default("Database user", :username, "postgres")
-    prompt_with_default("Local role", :local_role, "postgres")
-    prompt_with_default("Overwrite local development db? (y/n)", :overwrite, "y")
+    prompt_with_default("Local role", :local_role, "root")
+    if overwrite.to_s.downcase[0,1] == "y"
+      prompt_with_default("Local db name", :local_db, "#{application}_development")
+    end
+
 
     # Dump database
     sudo "pg_dump -U #{username} #{dbname} > /tmp/db_dump.sql", :hosts => first_db_host
@@ -41,7 +44,7 @@ EOF
     system("sed -i s/#{application}/#{local_role}/g tmp/#{application}_#{stage}_dump.sql")
     if overwrite.to_s.downcase[0,1] == "y"
       # Import data
-      system("psql -d #{application}_development < tmp/#{application}_#{stage}_dump.sql")
+      system("psql -d #{local_db} < tmp/#{application}_#{stage}_dump.sql")
     end
   end
 
