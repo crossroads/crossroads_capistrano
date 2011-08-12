@@ -27,7 +27,7 @@ set :https_port,     "443"
 
 default_run_options[:pty] = true
 
-def needs_netrc?;   repository.include?("svn.globalhand.org"); end
+def needs_netrc?;   repository.include?("code.crossroads.org.hk"); end
 def needs_ssh_key?; repository.include?("github.com"); end
 
 
