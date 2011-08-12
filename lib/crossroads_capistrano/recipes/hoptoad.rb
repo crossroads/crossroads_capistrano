@@ -34,7 +34,7 @@ end
 
 namespace :hoptoad do
   desc "Test Hoptoad Notifier"
-  task :test do
+  task :test_error do
     run "cd #{current_path}; RAILS_ENV=#{rails_env} bundle exec rake hoptoad:test"
   end
 end
