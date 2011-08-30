@@ -11,8 +11,8 @@ namespace :deploy do
       require File.join(rails_root,'config','initializers','hoptoad')
       require 'hoptoad_tasks'
 
-      # Format HoptoadTasks output nicely.
-      HoptoadTasks.module_eval do; def self.puts(str); super " ** #{str}\n\n"; end; end
+      # Ignore HoptoadTasks output. Don't want to see the XML request.
+      HoptoadTasks.module_eval do; def self.puts(str); true; end; end
 
       rails_env = fetch(:hoptoad_env, fetch(:rails_env, "production"))
       local_user = ENV['USER'] || ENV['USERNAME']
@@ -28,6 +28,8 @@ namespace :deploy do
                           :scm_revision   => current_revision,
                           :scm_repository => repository,
                           :local_username => local_user)
+
+      puts "\n      ===== Notified."
     end
   end
 end
