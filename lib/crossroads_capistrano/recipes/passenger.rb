@@ -59,13 +59,16 @@ namespace :passenger do
       end
       # httpd conf
       sudo "cp -f #{release_path}/config/httpd-rails.conf #{httpd_site_conf_path}"
-      sed httpd_site_conf_path, {"DEPLOY_TO"        => deploy_to,
-                                 "IP_ADDR"          => ip_address,
-                                 "SERVER_NAME"      => site_domain_name,
-                                 "SITE_DOMAIN_NAME" => site_domain_name,
-                                 "HTTP_PORT"        => http_port,
-                                 "HTTPS_PORT"       => https_port,
-                                 "RAILS_ENV"        => rails_env}
+      httpd_settings = {}
+      httpd_settings["DEPLOY_TO"]        = deploy_to if exists?(:deploy_to)
+      httpd_settings["IP_ADDR"]          = ip_address if exists?(:ip_address)
+      httpd_settings["SERVER_NAME"]      = site_domain_name if exists?(:site_domain_name)
+      httpd_settings["SITE_DOMAIN_NAME"] = site_domain_name if exists?(:site_domain_name)
+      httpd_settings["HTTP_PORT"]        = http_port if exists?(:http_port)
+      httpd_settings["HTTPS_PORT"]       = https_port if exists?(:https_port)
+      httpd_settings["RAILS_ENV"]        = rails_env if exists?(:rails_env)
+      sed httpd_site_conf_path, httpd_settings
+      
       # passenger conf
       sudo "cp -f #{release_path}/config/passenger.conf #{passenger_conf_path}"
       sed passenger_conf_path,  {"PASSENGER_ROOT"   => passenger_root,
