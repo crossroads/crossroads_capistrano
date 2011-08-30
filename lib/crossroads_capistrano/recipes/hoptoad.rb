@@ -29,7 +29,7 @@ namespace :deploy do
                           :scm_repository => repository,
                           :local_username => local_user)
 
-      puts "\n      ===== Notified."
+      puts "      ===== Notified.\n\n"
     end
   end
 end
