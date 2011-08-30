@@ -13,7 +13,12 @@ namespace :rvm do
     yum.install( {:base => %w(curl git gcc-c++ patch readline readline-devel zlib zlib-devel libyaml-devel libffi-devel openssl-devel make bzip2)}, :stable, :shell => 'sh' )
   end
 
+  desc "Trust the application rvmrc file that is deployed"
+  task :trust do
+    run "rvm rvmrc trust #{current_path}"
+  end
+
 end
 
 before "stack", "rvm:install"
-
+before "deploy:restart", "rvm:trust"
