@@ -59,12 +59,3 @@ private
 end
 
 Capistrano.plugin :yum, Yum
-
-desc "Takes a list of yum packages and determines if they need updating. This is useful for determining whether to apply security updates."
-task :list_installed_yum_packages do
-  prompt_with_default("Enter comma seperated list of yum pacakges (e.g. qspice, lftp).\nIf you leave this blank then it will list all installed packages:", :packages, "")
-  packages.gsub!(/,\s*/, "\\|")
-  sudo "yum -C list | grep '#{packages}' | grep installed"
-  puts "The packages listed above are installed on the system"
-end
-

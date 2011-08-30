@@ -7,10 +7,8 @@ before "deploy:cold",  "stack:setup"
 namespace :stack do
   desc "Setup operating system and rails environment"
   task :setup do
-    if exists?(:yum_packages)
-      yum.update
-      yum.install({:base => yum_packages}, :stable)
-    end
+    package.update
+    package.install
     gemrc.setup
     bundler.setup
     deploy.setup
@@ -28,6 +26,29 @@ namespace :stack do
       run "rvmsudo gem install bundler"
     end
   end
+end
+
+# yum wrapper
+namespace :package do
+
+  desc "Installs yum packages required for the app"
+  task :install do
+    yum.install({:base => yum_packages}, :stable) if exists?(:yum_packages)
+  end
+
+  desc "Updates all yum packages installed"
+  task :update do
+    yum.update
+  end
+
+  desc "Takes a list of yum packages and determines if they need updating. This is useful for determining whether to apply security updates."
+  task :list_installed_yum_packages do
+    prompt_with_default("Enter comma seperated list of yum pacakges (e.g. qspice, lftp).\nIf you leave this blank then it will list all installed packages:", :packages, "")
+    packages.gsub!(/,\s*/, "\\|")
+    sudo "yum -C list | grep '#{packages}' | grep installed"
+    puts "The packages listed above are installed on the system"
+  end
+
 end
 
 namespace :shared do
