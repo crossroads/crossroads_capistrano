@@ -10,7 +10,7 @@ load File.join(File.dirname(__FILE__), "config.rb")
 
 # Settings
 # ---------------------------------------------------------
-set :default_stage,  "preview"
+set :default_stage,  "staging"
 set :rails_env,      "production"
 
 set :scm,            :git
