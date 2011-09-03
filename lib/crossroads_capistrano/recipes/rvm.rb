@@ -16,6 +16,7 @@ namespace :rvm do
   desc "Trust the application rvmrc file that is deployed"
   task :trust do
     run "rvm rvmrc trust #{current_path}"
+    run "if [ -d #{release_path} ]; then rvm rvmrc trust #{release_path}; fi"
   end
 
 end
