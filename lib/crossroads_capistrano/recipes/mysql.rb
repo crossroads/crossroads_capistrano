@@ -27,7 +27,6 @@ EOF
 
   desc "Download production database to local machine"
   task :pull do
-    prompt_with_default("Remote database name", :database_name, "#{application}_#{stage}")
     prompt_with_default("Overwrite local db? (y/n)", :overwrite, "y")
     if overwrite.to_s.downcase[0,1] == "y"
       prompt_with_default("Local role", :local_role, "root")
@@ -35,15 +34,20 @@ EOF
     end
 
     # Dump database
-    sudo "mysqldump #{database_name} > /tmp/db_dump.sql", :hosts => first_db_host
-    # Download dumped database
-    get_with_status "/tmp/db_dump.sql", "tmp/#{application}_#{stage}_dump.sql", :via => :scp, :hosts => first_db_host
-    # Delete dumped database from server
-    sudo "rm -rf /tmp/db_dump.sql", :hosts => first_db_host
+    get "#{shared_path}/config/database.yml", "tmp/#{first_db_host}_database.yml", :hosts => first_db_host
+    server_db_config = YAML::load( File.open( "tmp/#{first_db_host}_database.yml" ) )[rails_env]
+    system "rm -rf tmp/#{first_db_host}_database.yml"
+    db_name = server_db_config['database']
+    db_username = server_db_config['username']
+    db_password = server_db_config['password']
+    server_db_file = "/tmp/db_dump.sql"
+    local_db_file = "tmp/#{application}_#{stage}_dump.sql"
+    sudo "mysqldump -u #{db_name} --password=#{db_password} #{db_name} > #{server_db_file}", :hosts => first_db_host
+    get_with_status server_db_file, local_db_file, :via => :scp, :hosts => first_db_host
+    sudo "rm -rf #{server_db_file}", :hosts => first_db_host
     if overwrite.to_s.downcase[0,1] == "y"
-      # Import data
       puts "== Importing data to local database..."
-      system "mysql -u #{local_role} #{local_db} < tmp/#{application}_#{stage}_dump.sql"
+      system "mysql -u #{local_role} #{local_db} < #{local_db_file}"
     end
   end
 end
