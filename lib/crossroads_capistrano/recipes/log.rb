@@ -1,8 +1,8 @@
 namespace :log do
   namespace :tail do
-    desc "Tail Rails production log file"
-    task :production, :roles => :app do
-      run "tail -f #{shared_path}/log/production.log" do |channel, stream, data|
+    desc "Tail rails log file"
+    task :rails, :roles => :app do
+      run "tail -f #{shared_path}/log/#{rails_env}.log" do |channel, stream, data|
         puts "\n#{channel[:host]}: #{data}"
         break if stream == :err
       end
@@ -17,15 +17,15 @@ namespace :log do
   end
 
   namespace :pull do
-    desc "Pull production log file to /tmp/production.log"
-    task :production, :roles => :app do
-      run "gzip -c #{shared_path}/log/production.log > #{shared_path}/log/production.log.gz"
-      `rm -f /tmp/production.log.gz`
-      puts "Downloading #{shared_path}/log/production.log...\n"
-      get_with_status "#{shared_path}/log/production.log.gz", "/tmp/production.log.gz", :via => :scp
-      run "rm -f #{shared_path}/log/production.log.gz"
-      `gzip -fd /tmp/production.log.gz`
-      puts "File can be accessed at /tmp/production.log"
+    desc "Pull rails log file to /tmp/#{rails_env}.log"
+    task :rails, :roles => :app do
+      run "gzip -c #{shared_path}/log/#{rails_env}.log > #{shared_path}/log/#{rails_env}.log.gz"
+      `rm -f /tmp/#{rails_env}.log.gz`
+      puts "Downloading #{shared_path}/log/#{rails_env}.log...\n"
+      get_with_status "#{shared_path}/log/#{rails_env}.log.gz", "/tmp/#{rails_env}.log.gz", :via => :scp
+      run "rm -f #{shared_path}/log/#{rails_env}.log.gz"
+      `gzip -fd /tmp/#{rails_env}.log.gz`
+      puts "File can be accessed at /tmp/#{rails_env}.log"
     end
   end
 
