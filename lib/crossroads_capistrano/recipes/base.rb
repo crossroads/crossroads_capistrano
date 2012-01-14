@@ -19,6 +19,8 @@ set :deploy_via,     :remote_cache
 set :keep_releases,  3
 
 set :bundle_without, [:cucumber, :development, :test]
+# Prevent US-ASCII issues when gemspecs contain UTF-8 characters (author names, etc.)
+set :bundle_cmd, "LANG='en_US.UTF-8' LC_ALL='en_US.UTF-8' bundle"
 
 set :httpd_user,     "apache"
 set :httpd_group,    "apache"
