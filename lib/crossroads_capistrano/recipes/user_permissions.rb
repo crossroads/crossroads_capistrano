@@ -12,7 +12,7 @@ end
 namespace :deploy do
   desc "Deploy permissions (give user access to everything)"
   task :user_permissions do
-    sudo "chown -R #{user} #{deploy_to}", :shell => 'sh'
+    run "if [ -d #{deploy_to} ]; then #{sudo} chown -R #{user} #{deploy_to}; fi", :shell => 'sh'
     $apache_permissions = false
   end
 

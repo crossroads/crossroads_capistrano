@@ -23,8 +23,8 @@ namespace :deploy do
   desc "Apache permissions (for passenger)"
   task :apache_permissions do
     unless $apache_permissions
-      sudo "chown -R #{httpd_user}:#{httpd_group} #{current_path}/"
-      sudo "chown -R #{httpd_user}:#{httpd_group} #{shared_path}/"
+      run "if [ -d #{release_path}/ ]; then #{sudo} chown -R #{httpd_user}:#{httpd_group} #{current_path}/; fi"
+      run "if [ -d #{release_path}/ ]; then #{sudo} chown -R #{httpd_user}:#{httpd_group} #{shared_path}/; fi"
       $apache_permissions = true
     end
   end
