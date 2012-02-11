@@ -4,6 +4,9 @@ namespace :rvm do
 
   desc "Install rvm"
   task :install, :roles => :web do
+    if rvm_ruby_string == "default"
+      raise "rvm_ruby_string has not been set! Please set it in config/deploy.rb"
+    end
     install_deps
     run "if ! [ -e #{rvm_bin_path}/rvm ]; then bash -c \"curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer | bash\" stable; fi", :shell => 'sh'
     run "if ! (#{rvm_bin_path}/rvm list | grep #{rvm_ruby_string}); then #{sudo} #{rvm_bin_path}/rvm install #{rvm_ruby_string}; fi", :shell => 'sh'
