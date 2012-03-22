@@ -33,12 +33,12 @@ namespace :package do
 
   desc "Installs yum packages required for the app"
   task :install do
-    yum.install({:base => yum_packages}, :stable) if exists?(:yum_packages)
+    yum.install({:base => yum_packages}, :stable, :shell => 'sh') if exists?(:yum_packages)
   end
 
   desc "Updates all yum packages installed"
   task :update do
-    yum.update
+    yum.update :shell => 'sh'
   end
 
   desc "Takes a list of yum packages and determines if they need updating. This is useful for determining whether to apply security updates."
