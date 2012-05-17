@@ -56,12 +56,19 @@ namespace :shared do
   desc "Setup shared directory"
   task :setup do
     sudo "mkdir -p #{shared_path}/config"
+    sudo "chown #{httpd_user}:#{httpd_group} #{shared_path}/config"
+    sudo "chmod 755 #{shared_path}/config"
   end
 
-  desc "Set permissions on shared directory"
+  desc "Set permissions on folders inside the shared directory"
   task :permissions do
-    sudo "chown -R #{httpd_user}:#{httpd_group} #{shared_path}/"
-    sudo "chmod -R 755 #{shared_path}/"
+    %w( config log pids system ).each do |name|
+      folder = "#{shared_path}/#{name}"
+      if File.exists?(folder)
+        sudo "chown -R #{httpd_user}:#{httpd_group} #{folder}/"
+        sudo "chmod -R 755 #{folder}/"
+      end
+    end
   end
 end
 
@@ -108,4 +115,3 @@ namespace :ssh_key do
     run  "    if ! (ls $HOME/.ssh/id_rsa); then (ssh-keygen -N '' -t rsa -q -f $HOME/.ssh/id_rsa && cat $HOME/.ssh/id_rsa.pub) && exit 1; fi"
   end
 end
-

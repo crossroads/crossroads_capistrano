@@ -23,8 +23,12 @@ namespace :deploy do
   desc "Apache permissions (for passenger)"
   task :apache_permissions do
     unless $apache_permissions
-      run "if [ -d #{release_path}/ ]; then #{sudo} chown -R #{httpd_user}:#{httpd_group} #{current_path}/; fi"
-      run "if [ -d #{release_path}/ ]; then #{sudo} chown -R #{httpd_user}:#{httpd_group} #{shared_path}/; fi"
+      run "if [ -d #{current_path}/ ]; then #{sudo} chown -R #{httpd_user}:#{httpd_group} #{current_path}/; fi"
+      %w( config log pids system ).each do |name|
+        folder = "#{shared_path}/#{name}"
+        run "if [ -d #{folder}/ ]; then #{sudo} chown -R #{httpd_user}:#{httpd_group} #{folder}/; fi"
+        run "if [ -d #{folder}/ ]; then #{sudo} chmod -R 750 #{folder}/; fi"
+      end
       $apache_permissions = true
     end
   end
@@ -81,4 +85,3 @@ before "deploy:cold",        "passenger:install"
 after "deploy:update_code",  "passenger:config"
 before "deploy:start",       "deploy:apache_permissions"
 before "deploy:restart",     "deploy:apache_permissions"
-
