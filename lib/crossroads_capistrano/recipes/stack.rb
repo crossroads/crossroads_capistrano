@@ -7,10 +7,8 @@ before "deploy:cold",  "stack:setup"
 namespace :stack do
   desc "Setup operating system and rails environment"
   task :setup do
-    package.update
     package.install
     gemrc.setup
-    bundler.setup
     deploy.setup
     shared.setup
     config.setup
@@ -18,13 +16,6 @@ namespace :stack do
     shared.permissions
     netrc.setup     if needs_netrc?
     ssh_key.setup   if needs_ssh_key?
-  end
-
-  namespace :bundler do
-    desc "Install Bundler"
-    task :setup do
-      run "rvmsudo gem install bundler"
-    end
   end
 end
 
