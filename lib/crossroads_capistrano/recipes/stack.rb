@@ -66,9 +66,7 @@ end
 namespace :gemrc do
   desc "Setup ~/.gemrc file to avoid rdoc and ri generation"
   task :setup do
-    puts "\n ** == Configuring ~/.gemrc ...\n\n"
-    home_dir = capture("#{sudo} echo ~").strip
-    put "gem: --no-ri --no-rdoc", "#{home_dir}/.gemrc"
+    run 'echo "gem: --no-ri --no-rdoc" > ~/.gemrc'
   end
 end
 
