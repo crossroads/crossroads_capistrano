@@ -43,4 +43,4 @@ namespace :airbrake do
   end
 end
 
-after NotificationTasks, "airbrake:notify_deployed"
+after NotificationTasks, "airbrake:notify_deployment"
