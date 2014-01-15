@@ -62,11 +62,11 @@ namespace :passenger do
         passenger_root = "#{gem_path}/gems/passenger-#{passenger_version}"
       end
       # httpd conf
-      sudo "cp -f #{release_path}/config/httpd-rails.conf #{httpd_site_conf_path}"
+      sudo "cp -f #{current_release}/config/httpd-rails.conf #{httpd_site_conf_path}"
       httpd_settings = {}
       httpd_settings["DEPLOY_TO"]        = deploy_to if exists?(:deploy_to)
       httpd_settings["IP_ADDR"]          = ip_address if exists?(:ip_address)
-      httpd_settings["SERVER_NAME"]      = site_domain_name if exists?(:site_domain_name)
+      httpd_settings["SERVER_NAME"]      = server_name if exists?(:server_name)
       httpd_settings["SITE_DOMAIN_NAME"] = site_domain_name if exists?(:site_domain_name)
       httpd_settings["HTTP_PORT"]        = http_port if exists?(:http_port)
       httpd_settings["HTTPS_PORT"]       = https_port if exists?(:https_port)
@@ -74,7 +74,7 @@ namespace :passenger do
       sed httpd_site_conf_path, httpd_settings
       
       # passenger conf
-      sudo "cp -f #{release_path}/config/passenger.conf #{passenger_conf_path}"
+      sudo "cp -f #{current_release}/config/passenger.conf #{passenger_conf_path}"
       sed passenger_conf_path,  {"PASSENGER_ROOT"   => passenger_root,
                                  "RUBY_ROOT"        => ruby_root}
     end

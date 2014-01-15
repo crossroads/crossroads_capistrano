@@ -16,3 +16,11 @@ bc. require 'crossroads_capistrano'
 CrossroadsCapistrano.load_recipes %w(prompt rvm stack passenger postgresql newrelic log)
 # or ..
 CrossroadsCapistrano.load_recipes :all
+
+
+h3. Changes
+
+v1.4.45 - for passenger.conf: SERVER_NAME is no longer driven using the site_domain_name variable. Use server_name instead.
+v1.4.44 - Added airbrake recipe and fixed bugs in RVM deployment
+v1.4.43 - Don't recursively chown all of the shared directory. Can take a long time!
+v1.4.42 - Fix issues where some commands wouldn't run if ruby wasn't installed
