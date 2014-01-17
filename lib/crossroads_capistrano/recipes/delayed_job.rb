@@ -11,7 +11,9 @@ namespace :delayed_job do
 
   desc "Restart the delayed_job process"
   task :restart, :roles => :app do
-    run "cd #{current_path}; RAILS_ENV=#{rails_env} bundle exec ./script/delayed_job restart"
+    # We've found stop|start to be more reliable than restart
+    run "cd #{current_path}; RAILS_ENV=#{rails_env} bundle exec ./script/delayed_job stop"
+    run "cd #{current_path}; RAILS_ENV=#{rails_env} bundle exec ./script/delayed_job start"
   end
 
   desc "delayed_job status"
@@ -19,4 +21,3 @@ namespace :delayed_job do
     run "ps aux | grep 'delayed_job'"
   end
 end
-
