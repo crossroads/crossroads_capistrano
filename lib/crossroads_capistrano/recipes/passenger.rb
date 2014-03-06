@@ -38,8 +38,7 @@ namespace :passenger do
   desc "Install Passenger"
   task :install, :roles => :web do
     install_deps
-    passenger_install_cmd = (exists?(:rvm_ruby_string) ? "rvmsudo " : "") << "passenger-install-apache2-module --auto" # sets up ruby wrapper correctly
-    run "if ! (gem list | grep passenger | grep #{passenger_version}); then gem install passenger --no-rdoc --no-ri --version #{passenger_version} && #{passenger_install_cmd}; fi"
+    run "if ! (gem list | grep passenger | grep #{passenger_version}); then gem install passenger --no-rdoc --no-ri --version #{passenger_version} && passenger-install-apache2-module --auto; fi"
   end
 
   task :install_deps, :roles => :web do
@@ -72,7 +71,7 @@ namespace :passenger do
       httpd_settings["HTTPS_PORT"]       = https_port if exists?(:https_port)
       httpd_settings["RAILS_ENV"]        = rails_env if exists?(:rails_env)
       sed httpd_site_conf_path, httpd_settings
-      
+
       # passenger conf
       sudo "cp -f #{current_release}/config/passenger.conf #{passenger_conf_path}"
       sed passenger_conf_path,  {"PASSENGER_ROOT"   => passenger_root,
