@@ -25,7 +25,3 @@ password: #{ldap_bind_password}
   end
 
 end
-
-before "deploy:cold",        "ldap:config"
-after  "deploy:update_code", "ldap:symlink"
-

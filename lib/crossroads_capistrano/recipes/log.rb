@@ -43,6 +43,3 @@ namespace :log do
   end
 
 end
-
-after "stack", "log:symlink_shared"
-

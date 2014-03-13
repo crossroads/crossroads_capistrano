@@ -11,8 +11,6 @@ namespace :stack do
     gemrc.setup
     deploy.setup
     shared.setup
-    config.setup
-    db.config.setup if respond_to?(:db)
     shared.permissions
     netrc.setup     if needs_netrc?
     ssh_key.setup   if needs_ssh_key?
