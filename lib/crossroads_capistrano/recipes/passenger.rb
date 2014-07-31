@@ -38,6 +38,7 @@ namespace :passenger do
   desc "Install Passenger"
   task :install, :roles => :web do
     install_deps
+    # there is one problem here: need to remove all existing versions of passenger first as passenger-install-apache2-module will install it for most recent version, this is not usually a problem until you want to downgrade passenger
     run "if ! (gem list | grep passenger | grep #{passenger_version}); then gem install passenger --no-rdoc --no-ri --version #{passenger_version} && passenger-install-apache2-module --auto; fi"
   end
 
@@ -63,6 +64,7 @@ namespace :passenger do
       # httpd conf
       sudo "cp -f #{current_release}/config/httpd-rails.conf #{httpd_site_conf_path}"
       httpd_settings = {}
+      httpd_settings["CURRENT_RELEASE"]  = current_release if exists?(:current_release)
       httpd_settings["DEPLOY_TO"]        = deploy_to if exists?(:deploy_to)
       httpd_settings["IP_ADDR"]          = ip_address if exists?(:ip_address)
       httpd_settings["SERVER_NAME"]      = server_name if exists?(:server_name)
